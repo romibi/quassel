@@ -1051,6 +1051,18 @@ void MainWin::setupToolBars()
     QtUi::toolBarActionProvider()->addActions(_mainToolBar, ToolBarActionProvider::MainToolBar);
     _toolbarMenu->addAction(_mainToolBar->toggleViewAction());
 
+#ifdef HAVE_KDE
+	_nickToolBar = new KToolBar("NickToolBar", this, Qt::TopToolBarArea, false, true, true);
+#else
+	_nickToolBar = new QToolBar(this);
+	_nickToolBar->setObjectName("NickToolBar");
+#endif
+	_nickToolBar->setWindowTitle(tr("Nick Toolbar"));
+	addToolBar(_nickToolBar);
+
+	QtUi::toolBarActionProvider()->addActions(_nickToolBar, ToolBarActionProvider::NickToolBar);
+	_toolbarMenu->addAction(_nickToolBar->toggleViewAction());
+
 #ifdef Q_OS_MAC
     QtUiSettings uiSettings;
 
