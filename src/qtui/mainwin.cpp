@@ -366,7 +366,7 @@ void MainWin::setupActions()
     // File
 	coll->addAction("ConnectCore", new Action(QIcon(":/icons/quassel-128.png"), tr("&Connect to Core..."), coll,
             this, SLOT(showCoreConnectionDlg())));
-	coll->addAction("DisconnectCore", new Action(QIcon(":/icons/quassel-message.png"), tr("&Disconnect from Core"), coll,
+	coll->addAction("DisconnectCore", new Action(QIcon(":/icons/quassel-disconnect.png"), tr("&Disconnect from Core"), coll,
             Client::instance(), SLOT(disconnectFromCore())));
     coll->addAction("ChangePassword", new Action(QIcon::fromTheme("dialog-password"), tr("Change &Password..."), coll,
             this, SLOT(showPasswordChangeDlg())));
