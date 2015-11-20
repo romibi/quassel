@@ -1058,6 +1058,7 @@ void MainWin::setupToolBars()
 	_nickToolBar->setObjectName("NickToolBar");
 #endif
 	_nickToolBar->setWindowTitle(tr("Nick Toolbar"));
+	_nickToolBar->setVisible(false); //default: not visible
 	addToolBar(_nickToolBar);
 
 	QtUi::toolBarActionProvider()->addActions(_nickToolBar, ToolBarActionProvider::NickToolBar);
