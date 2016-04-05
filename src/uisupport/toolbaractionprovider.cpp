@@ -29,8 +29,8 @@ ToolBarActionProvider::ToolBarActionProvider(QObject *parent)
 {
     registerAction(NetworkConnectAllWithDropdown, QIcon::fromTheme("network-connect"), tr("Connect"))->setToolTip(tr("Connect to IRC"));
     registerAction(NetworkDisconnectAllWithDropdown, QIcon::fromTheme("network-disconnect"), tr("Disconnect"))->setToolTip(tr("Disconnect from IRC"));
-	registerAction(NetworkConnectAll, tr("Connect to all"));
-	registerAction(NetworkDisconnectAll, tr("Disconnect from all"));
+    registerAction(NetworkConnectAll, tr("Connect to all"));
+    registerAction(NetworkDisconnectAll, tr("Disconnect from all"));
 
     registerAction(BufferPart, QIcon::fromTheme("irc-close-channel"), tr("Part"))->setToolTip(tr("Leave currently selected channel"));
     registerAction(JoinChannel, QIcon::fromTheme("irc-join-channel"), tr("Join"))->setToolTip(tr("Join a channel"));
