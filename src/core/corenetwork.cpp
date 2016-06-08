@@ -90,10 +90,39 @@ CoreNetwork::CoreNetwork(const NetworkId &networkid, CoreSession *session)
 
 CoreNetwork::~CoreNetwork()
 {
-    if (connectionState() != Disconnected && connectionState() != Network::Reconnecting)
-        disconnectFromIrc(false);  // clean up, but this does not count as requested disconnect!
+    // Request a proper disconnect, but don't count as user-requested disconnect
+    if (socketConnected()) {
+        // Only try if the socket's fully connected (not initializing or disconnecting).
+        disconnectFromIrc(false);
+        /* FIXME When queue prepend pull request is merged, follow up with commit to flag this
+         * as jumping the queue.  Ensures the proper QUIT is shown even if other messages
+         * queued.  This comment will be removed in a future commit when other PR is merged.
+         * See https://github.com/quassel/quassel/pull/201
+         */
+        // Process the putCmd events that trigger the quit.  Without this, shutting down the core
+        // results in abrubtly closing the socket rather than sending the QUIT as expected.
+        QCoreApplication::processEvents();
+        // Wait briefly for each network to disconnect.  Sometimes it takes a little while to send.
+        if (!forceDisconnect()) {
+            qWarning() << "Timed out quitting network" << networkName() <<
+                          "(user ID " << userId() << ")";
+        }
+    }
     disconnect(&socket, 0, this, 0); // this keeps the socket from triggering events during clean up
     delete _userInputHandler;
+}
+
+
+bool CoreNetwork::forceDisconnect(int msecs)
+{
+    if (socket.state() == QAbstractSocket::UnconnectedState) {
+        // Socket already disconnected.
+        return true;
+    }
+    // Request a socket-level disconnect if not already happened
+    socket.disconnectFromHost();
+    // Return the result of waiting for disconnect; true if successful, otherwise false
+    return socket.waitForDisconnected(msecs);
 }
 
 
