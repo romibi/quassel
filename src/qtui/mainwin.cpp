@@ -370,9 +370,9 @@ void MainWin::setupActions()
 {
     ActionCollection *coll = QtUi::actionCollection("General", tr("General"));
     // File
-    coll->addAction("ConnectCore", new Action(QIcon::fromTheme("network-connect"), tr("&Connect to Core..."), coll,
+    coll->addAction("ConnectCore", new Action(QIcon(":/icons/quassel-128.png"), tr("&Connect to Core..."), coll,
             this, SLOT(showCoreConnectionDlg())));
-    coll->addAction("DisconnectCore", new Action(QIcon::fromTheme("network-disconnect"), tr("&Disconnect from Core"), coll,
+    coll->addAction("DisconnectCore", new Action(QIcon(":/icons/quassel-disconnect.png"), tr("&Disconnect from Core"), coll,
             Client::instance(), SLOT(disconnectFromCore())));
     coll->addAction("ChangePassword", new Action(QIcon::fromTheme("dialog-password"), tr("Change &Password..."), coll,
             this, SLOT(showPasswordChangeDlg())));
@@ -1048,8 +1048,27 @@ void MainWin::setupToolBars()
     _mainToolBar->setWindowTitle(tr("Main Toolbar"));
     addToolBar(_mainToolBar);
 
+    if (Quassel::runMode() != Quassel::Monolithic) {
+        ActionCollection *coll = QtUi::actionCollection("General");
+        _mainToolBar->addAction(coll->action("ConnectCore"));
+        _mainToolBar->addAction(coll->action("DisconnectCore"));
+    }
+
     QtUi::toolBarActionProvider()->addActions(_mainToolBar, ToolBarActionProvider::MainToolBar);
     _toolbarMenu->addAction(_mainToolBar->toggleViewAction());
+
+#ifdef HAVE_KDE
+    _nickToolBar = new KToolBar("NickToolBar", this, Qt::TopToolBarArea, false, true, true);
+#else
+    _nickToolBar = new QToolBar(this);
+    _nickToolBar->setObjectName("NickToolBar");
+#endif
+    _nickToolBar->setWindowTitle(tr("Nick Toolbar"));
+    _nickToolBar->setVisible(false); //default: not visible
+    addToolBar(_nickToolBar);
+
+    QtUi::toolBarActionProvider()->addActions(_nickToolBar, ToolBarActionProvider::NickToolBar);
+    _toolbarMenu->addAction(_nickToolBar->toggleViewAction());
 
 #ifdef Q_OS_MAC
     QtUiSettings uiSettings;
