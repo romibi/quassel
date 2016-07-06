@@ -36,17 +36,51 @@ public:
     virtual inline qreal secondColumnSeparator() const { return 6; }
 
 public slots:
+    /**
+     * Generates initial settingsQss if it doesn't exist
+     *
+     * This allows for default fonts, colors, etc to specified.
+     */
+
+    void initializeSettingsQss();
+
+    /**
+     * Generates UI stylesheet based on selected fonts, colors, etc
+     */
     void generateSettingsQss() const;
 
 private slots:
     void updateTimestampFormatString();
+    /**
+     * Updates knowledge of whether or not to show sender brackets
+     */
+    void updateShowSenderBrackets();
 
 private:
     QString fontDescription(const QFont &font) const;
-    QString color(const QString &key, UiSettings &settings) const;
+
+    /**
+     * Generate a Qt stylesheet color string from a given setting
+     *
+     * @param[in] key          Reference to settings key containing a QColor
+     * @param[in] settings     UiSettings manager to search
+     * @param[in] defaultColor Fallback color if not found; when unspecified default is black
+     */
+    QString color(const QString &key, UiSettings &settings, const QColor &defaultColor = QColor()) const;
 
     QString msgTypeQss(const QString &msgType, const QString &key, UiSettings &settings) const;
-    QString senderQss(int i, UiSettings &settings) const;
+
+    /**
+     * Generate a snippet of Qss stylesheet for a given sender-hash index
+     *
+     * @param[in] i            Sender hash index from 0 - 15
+     * @param[in] settings     Reference to current UI settings, used for loading color values
+     * @param[in] messageType  Type of message to filter, e.g. 'plain' or 'action'
+     * @param[in] includeNick  Also apply foreground color to Nick
+     * @return Snippet of Quassel-theme-compatible Qss stylesheet
+     */
+    QString senderQss(int i, UiSettings &settings, const QString &messageType,
+                      bool includeNick = false) const;
     QString chatListItemQss(const QString &state, const QString &key, UiSettings &settings) const;
 };
 

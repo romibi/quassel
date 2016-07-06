@@ -180,6 +180,25 @@ private slots:
 #endif
     void showWebPreviewChanged();
 
+    /**
+     * Updates the local setting cache of whether or not to show sender brackets
+     */
+    void showSenderBracketsChanged();
+
+    /**
+     * Updates the local setting cache of the timestamp format string
+     */
+    void timestampFormatStringChanged();
+
+    /**
+     * Updates the status of whether or not the timestamp format string contains brackets
+     *
+     * When the timestamp contains brackets -and- showSenderBrackets is disabled, we need to
+     * automatically add brackets.  This function checks if the timestamp has brackets and stores
+     * the result, rather than checking each time text is copied.
+     */
+    void updateTimestampHasBrackets();
+
     void rowsRemoved();
 
     void clickTimeout();
@@ -225,6 +244,11 @@ private:
     bool _leftButtonPressed;
 
     bool _showWebPreview;
+
+    bool _showSenderBrackets;  /// If true, show brackets around sender names
+
+    QString _timestampFormatString; /// Format of the timestamp string
+    bool _timestampHasBrackets;     /// If true, timestamp format has [brackets] of some sort
 
     static const int _webSearchSelectionTextMaxVisible = 24;
 

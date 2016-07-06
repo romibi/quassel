@@ -29,6 +29,11 @@ QtUiStyle::QtUiStyle(QObject *parent) : UiStyle(parent)
     ChatViewSettings s;
     s.notify("TimestampFormat", this, SLOT(updateTimestampFormatString()));
     updateTimestampFormatString();
+    s.notify("ShowSenderBrackets", this, SLOT(updateShowSenderBrackets()));
+    updateShowSenderBrackets();
+
+    // If no style sheet exists, generate it on first run.
+    initializeSettingsQss();
 }
 
 
@@ -40,10 +45,29 @@ void QtUiStyle::updateTimestampFormatString()
     setTimestampFormatString(s.timestampFormatString());
 }
 
+void QtUiStyle::updateShowSenderBrackets()
+{
+    ChatViewSettings s;
+    enableSenderBrackets(s.showSenderBrackets());
+}
+
+
+void QtUiStyle::initializeSettingsQss()
+{
+    QFileInfo settingsQss(Quassel::configDirPath() + "settings.qss");
+    // Only initialize if it doesn't already exist
+    if (settingsQss.exists())
+        return;
+
+    // Generate and load the new stylesheet
+    generateSettingsQss();
+    reload();
+}
 
 void QtUiStyle::generateSettingsQss() const
 {
     QFile settingsQss(Quassel::configDirPath() + "settings.qss");
+
     if (!settingsQss.open(QFile::WriteOnly|QFile::Truncate)) {
         qWarning() << "Could not open" << settingsQss.fileName() << "for writing!";
         return;
@@ -94,12 +118,26 @@ void QtUiStyle::generateSettingsQss() const
         << "\n";
     }
 
-    if (s.value("UseSenderColors").toBool()) {
+    if (s.value("UseSenderColors", true).toBool()) {
         out << "\n// Sender Colors\n"
-            << "ChatLine::sender#plain[sender=\"self\"] { foreground: " << color("SenderSelf", s) << "; }\n\n";
+            << "ChatLine::sender#plain[sender=\"self\"] { foreground: " << color("SenderSelf", s, defaultSenderColorSelf) << "; }\n\n";
 
-        for (int i = 0; i < 16; i++)
-            out << senderQss(i, s);
+        // Matches qssparser.cpp for UiStyle::PlainMsg
+        for (int i = 0; i < defaultSenderColors.count(); i++)
+            out << senderQss(i, s, "plain");
+
+        // Only color the nicks in CTCP ACTIONs if sender colors are enabled
+        if (s.value("UseSenderActionColors", true).toBool()) {
+            // For action messages, color the 'sender' column -and- the nick itself
+            out << "\n// Sender Nickname Colors for action messages\n"
+                << "ChatLine::sender#action[sender=\"self\"] { foreground: " << color("SenderSelf", s, defaultSenderColorSelf) << "; }\n"
+                << "ChatLine::nick#action[sender=\"self\"] { foreground: " << color("SenderSelf", s, defaultSenderColorSelf) << "; }\n\n";
+
+            // Matches qssparser.cpp for UiStyle::ActionMsg
+            for (int i = 0; i < defaultSenderColors.count(); i++)
+                out << senderQss(i, s, "action", true);
+        }
+
     }
 
     // ItemViews
@@ -134,9 +172,9 @@ void QtUiStyle::generateSettingsQss() const
 }
 
 
-QString QtUiStyle::color(const QString &key, UiSettings &settings) const
+QString QtUiStyle::color(const QString &key, UiSettings &settings, const QColor &defaultColor) const
 {
-    return settings.value(key).value<QColor>().name();
+    return settings.value(key, defaultColor).value<QColor>().name();
 }
 
 
@@ -160,12 +198,20 @@ QString QtUiStyle::msgTypeQss(const QString &msgType, const QString &key, UiSett
 }
 
 
-QString QtUiStyle::senderQss(int i, UiSettings &settings) const
+QString QtUiStyle::senderQss(int i, UiSettings &settings, const QString &messageType, bool includeNick) const
 {
     QString dez = QString::number(i);
     if (dez.length() == 1) dez.prepend('0');
 
-    return QString("ChatLine::sender#plain[sender=\"0%1\"] { foreground: %2; }\n").arg(QString::number(i, 16), color("Sender"+dez, settings));
+    if (includeNick) {
+        // Include the nickname in the color rules
+        return QString("ChatLine::sender#%1[sender=\"0%2\"] { foreground: %3; }\n"
+                       "ChatLine::nick#%1[sender=\"0%2\"]   { foreground: %3; }\n")
+                .arg(messageType, QString::number(i, 16), color("Sender"+dez, settings, defaultSenderColors[i]));
+    } else {
+        return QString("ChatLine::sender#%1[sender=\"0%2\"] { foreground: %3; }\n")
+                .arg(messageType, QString::number(i, 16), color("Sender"+dez, settings, defaultSenderColors[i]));
+    }
 }
 
 
