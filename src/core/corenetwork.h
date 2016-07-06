@@ -169,6 +169,17 @@ public slots:
     void disconnectFromIrc(bool requested = true, const QString &reason = QString(),
                            bool withReconnect = false, bool forceImmediate = false);
 
+    /**
+     * Forcibly close the IRC server socket, waiting for it to close.
+     *
+     * Call CoreNetwork::disconnectFromIrc() first, allow the event loop to run, then if you need to
+     * be sure the network's disconencted (e.g. clean-up), call this.
+     *
+     * @param msecs  Maximum time to wait for socket to close, in milliseconds.
+     * @return True if socket closes successfully; false if error occurs or timeout reached
+     */
+    bool forceDisconnect(int msecs = 1000);
+
     void userInput(BufferInfo bufferInfo, QString msg);
 
     /**
@@ -371,6 +382,10 @@ private:
      * in the automatic session restore. */
     bool _quitRequested;
     QString _quitReason;
+
+    bool _disconnectExpected;  /// If true, connection is quitting, expect a socket close
+    // This avoids logging a spurious RemoteHostClosedError whenever disconnect is called without
+    // specifying a permanent (saved to core session) disconnect.
 
     bool _previousConnectionAttemptFailed;
     int _lastUsedServerIndex;
