@@ -13,17 +13,12 @@ compiler:
   - clang
 
 env:
-  - QT_VERSION=qt4
   - QT_VERSION=qt5
 
 matrix:
   exclude:
-    - compiler: clang
-      env: QT_VERSION=qt4
     - os: osx
       compiler: clang
-    - os: osx
-      env: QT_VERSION=qt4
 
 install: |-
   if [ "$TRAVIS_OS_NAME" == "linux" ]
