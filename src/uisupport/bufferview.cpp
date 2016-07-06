@@ -28,6 +28,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QSet>
+#include <QVBoxLayout>
 
 #include "action.h"
 #include "buffermodel.h"
@@ -516,6 +517,30 @@ void BufferView::changeBuffer(Direction direction)
     selectionModel()->select(resultingIndex, QItemSelectionModel::ClearAndSelect);
 }
 
+void BufferView::selectFirstBuffer()
+{
+    int networksCount = model()->rowCount(QModelIndex());
+    if (networksCount == 0) {
+        return;
+    }
+
+    QModelIndex bufferIndex;
+    for (int row = 0; row < networksCount; row++) {
+        QModelIndex networkIndex = model()->index(row, 0, QModelIndex());
+        int childCount = model()->rowCount(networkIndex);
+        if (childCount > 0) {
+            bufferIndex = model()->index(0, 0, networkIndex);
+            break;
+        }
+    }
+
+    if (!bufferIndex.isValid()) {
+        return;
+    }
+
+    selectionModel()->setCurrentIndex(bufferIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    selectionModel()->select(bufferIndex, QItemSelectionModel::ClearAndSelect);
+}
 
 void BufferView::wheelEvent(QWheelEvent *event)
 {
@@ -546,6 +571,16 @@ void BufferView::hideCurrentBuffer()
       config()->requestRemoveBufferPermanently(bufferId);
     else*/
     config()->requestRemoveBuffer(bufferId);
+}
+
+void BufferView::filterTextChanged(QString filterString)
+{
+    BufferViewFilter *filter = qobject_cast<BufferViewFilter *>(model());
+    if (!filter) {
+        return;
+    }
+    filter->setFilterString(filterString);
+    on_configChanged(); // make sure collapsation is correct
 }
 
 
@@ -631,6 +666,9 @@ bool BufferViewDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, c
 // ==============================
 BufferViewDock::BufferViewDock(BufferViewConfig *config, QWidget *parent)
     : QDockWidget(parent),
+    _childWidget(0),
+    _widget(new QWidget(parent)),
+    _filterEdit(new QLineEdit(parent)),
     _active(false),
     _title(config->bufferViewName())
 {
@@ -638,7 +676,22 @@ BufferViewDock::BufferViewDock(BufferViewConfig *config, QWidget *parent)
     toggleViewAction()->setData(config->bufferViewId());
     setAllowedAreas(Qt::RightDockWidgetArea|Qt::LeftDockWidgetArea);
     connect(config, SIGNAL(bufferViewNameSet(const QString &)), this, SLOT(bufferViewRenamed(const QString &)));
+    connect(config, SIGNAL(configChanged()), SLOT(configChanged()));
     updateTitle();
+
+    _widget->setLayout(new QVBoxLayout);
+    _widget->layout()->setSpacing(0);
+    _widget->layout()->setContentsMargins(0, 0, 0, 0);
+
+    // We need to potentially hide it early, so it doesn't flicker
+    _filterEdit->setVisible(config->showSearch());
+    _filterEdit->setFocusPolicy(Qt::ClickFocus);
+    _filterEdit->installEventFilter(this);
+    _filterEdit->setPlaceholderText(tr("Search..."));
+    connect(_filterEdit, SIGNAL(returnPressed()), SLOT(onFilterReturnPressed()));
+
+    _widget->layout()->addWidget(_filterEdit);
+    QDockWidget::setWidget(_widget);
 }
 
 
@@ -650,17 +703,74 @@ void BufferViewDock::updateTitle()
     setWindowTitle(title);
 }
 
+void BufferViewDock::configChanged()
+{
+    if (_filterEdit->isVisible() != config()->showSearch()) {
+        _filterEdit->setVisible(config()->showSearch());
+        _filterEdit->clear();
+    }
+}
+
+void BufferViewDock::onFilterReturnPressed()
+{
+    if (_oldFocusItem) {
+        _oldFocusItem->setFocus();
+        _oldFocusItem = 0;
+    }
+
+    if (!config()->showSearch()) {
+        _filterEdit->setVisible(false);
+    }
+
+    BufferView *view = bufferView();
+    if (!view || _filterEdit->text().isEmpty()) {
+        return;
+    }
+
+    view->selectFirstBuffer();
+    _filterEdit->clear();
+}
 
 void BufferViewDock::setActive(bool active)
 {
     if (active != isActive()) {
         _active = active;
         updateTitle();
-        if (active)
+        if (active) {
             raise();  // for tabbed docks
+        }
     }
 }
 
+bool BufferViewDock::eventFilter(QObject *object, QEvent *event)
+{
+   if (object != _filterEdit)  {
+       return false;
+   }
+
+   if (event->type() == QEvent::FocusOut) {
+       if (!config()->showSearch() && _filterEdit->text().isEmpty()) {
+           _filterEdit->setVisible(false);
+           return true;
+       }
+   } else if (event->type() == QEvent::KeyRelease) {
+       QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+       if (keyEvent->key() != Qt::Key_Escape) {
+           return false;
+       }
+
+       _filterEdit->clear();
+
+       if (_oldFocusItem) {
+           _oldFocusItem->setFocus();
+           _oldFocusItem = 0;
+       }
+
+       return true;
+   }
+
+   return false;
+}
 
 void BufferViewDock::bufferViewRenamed(const QString &newName)
 {
@@ -690,4 +800,23 @@ BufferViewConfig *BufferViewDock::config() const
         return 0;
     else
         return view->config();
+}
+
+void BufferViewDock::setWidget(QWidget *newWidget)
+{
+    _widget->layout()->addWidget(newWidget);
+    _childWidget = newWidget;
+
+    connect(_filterEdit, SIGNAL(textChanged(QString)), bufferView(), SLOT(filterTextChanged(QString)));
+}
+
+void BufferViewDock::activateFilter()
+{
+    if (!_filterEdit->isVisible()) {
+        _filterEdit->setVisible(true);
+    }
+
+    _oldFocusItem = qApp->focusWidget();
+
+    _filterEdit->setFocus();
 }

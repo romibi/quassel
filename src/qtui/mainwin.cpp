@@ -460,6 +460,9 @@ void MainWin::setupActions()
     coll->addAction("JumpHotBuffer", new Action(tr("Jump to hot chat"), coll,
             this, SLOT(on_jumpHotBuffer_triggered()), QKeySequence(Qt::META + Qt::Key_A)));
 
+    coll->addAction("ActivateBufferFilter", new Action(tr("Activate the buffer search"), coll,
+            this, SLOT(on_bufferSearch_triggered()), QKeySequence(Qt::CTRL + Qt::Key_S)));
+
     // Jump keys
 #ifdef Q_OS_MAC
     const int bindModifier = Qt::ControlModifier | Qt::AltModifier;
@@ -723,7 +726,7 @@ BufferView *MainWin::activeBufferView() const
     if (_activeBufferViewIndex < 0 || _activeBufferViewIndex >= _bufferViews.count())
         return 0;
     BufferViewDock *dock = _bufferViews.at(_activeBufferViewIndex);
-    return dock->isActive() ? qobject_cast<BufferView *>(dock->widget()) : 0;
+    return dock->isActive() ? dock->bufferView() : 0;
 }
 
 
@@ -732,9 +735,8 @@ void MainWin::changeActiveBufferView(int bufferViewId)
     if (bufferViewId < 0)
         return;
 
-    BufferView *current = activeBufferView();
-    if (current) {
-        qobject_cast<BufferViewDock *>(current->parent())->setActive(false);
+    if (_activeBufferViewIndex >= 0 && _activeBufferViewIndex < _bufferViews.count()) {
+        _bufferViews[_activeBufferViewIndex]->setActive(false);
         _activeBufferViewIndex = -1;
     }
 
@@ -769,9 +771,9 @@ void MainWin::showPasswordChangeDlg()
 
 void MainWin::changeActiveBufferView(bool backwards)
 {
-    BufferView *current = activeBufferView();
-    if (current)
-        qobject_cast<BufferViewDock *>(current->parent())->setActive(false);
+    if (_activeBufferViewIndex >= 0 && _activeBufferViewIndex < _bufferViews.count()) {
+        _bufferViews[_activeBufferViewIndex]->setActive(false);
+    }
 
     if (!_bufferViews.count())
         return;
@@ -1673,6 +1675,16 @@ void MainWin::on_jumpHotBuffer_triggered()
         return;
 
     Client::bufferModel()->switchToBuffer(_bufferHotList->hottestBuffer());
+}
+
+void MainWin::on_bufferSearch_triggered()
+{
+    if (_activeBufferViewIndex < 0 || _activeBufferViewIndex >= _bufferViews.count()) {
+        qWarning() << "Tried to activate filter on invalid bufferview:" << _activeBufferViewIndex;
+        return;
+    }
+
+    _bufferViews[_activeBufferViewIndex]->activateFilter();
 }
 
 
