@@ -966,8 +966,13 @@ QString CoreNetwork::takeQueuedCap()
 void CoreNetwork::beginCapNegotiation()
 {
     // Don't begin negotiation if no capabilities are queued to request
-    if (!capNegotiationInProgress())
+    if (!capNegotiationInProgress()) {
+        // If the server doesn't have any capabilities, but supports CAP LS, continue on with the
+        // normal connection.
+        displayMsg(Message::Server, BufferInfo::StatusBuffer, "", tr("No capabilities available"));
+        endCapNegotiation();
         return;
+    }
 
     _capNegotiationActive = true;
     displayMsg(Message::Server, BufferInfo::StatusBuffer, "",
@@ -996,11 +1001,16 @@ void CoreNetwork::sendNextCap()
             _capNegotiationActive = false;
         }
 
-        // If nick registration is already complete, CAP END is not required
-        if (!_capInitialNegotiationEnded) {
-            putRawLine(serverEncode(QString("CAP END")));
-            _capInitialNegotiationEnded = true;
-        }
+        endCapNegotiation();
+    }
+}
+
+void CoreNetwork::endCapNegotiation()
+{
+    // If nick registration is already complete, CAP END is not required
+    if (!_capInitialNegotiationEnded) {
+        putRawLine(serverEncode(QString("CAP END")));
+        _capInitialNegotiationEnded = true;
     }
 }
 
