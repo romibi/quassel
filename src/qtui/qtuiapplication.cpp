@@ -148,6 +148,8 @@ bool QtUiApplication::init()
         // Set the icon theme
         if (Quassel::isOptionSet("icontheme"))
             QIcon::setThemeName(Quassel::optionValue("icontheme"));
+        else if (QtUiSettings().value("IconTheme", QVariant("")).toString() != "")
+            QIcon::setThemeName(QtUiSettings().value("IconTheme").toString());
         else if (QIcon::themeName().isEmpty())
             // Some platforms don't set a default icon theme; chances are we can find our bundled Oxygen theme though
             QIcon::setThemeName("oxygen");
