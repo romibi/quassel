@@ -171,12 +171,16 @@
     <file>breezedark/actions/24/document-open.svg</file>
     <file>breezedark/apps/48/quassel.svg</file>
     <file>breezedark/apps/32/help-about.svg</file>
+    <file>breezedark/status/16/irc-channel-parted.svg</file>
     <file>breezedark/status/16/dialog-information.svg</file>
     <file>breezedark/status/16/user-away.svg</file>
+    <file>breezedark/status/16/irc-channel-joined.svg</file>
+    <file>breezedark/status/22/irc-channel-parted.svg</file>
     <file>breezedark/status/22/security-low.svg</file>
     <file>breezedark/status/22/dialog-information.svg</file>
     <file>breezedark/status/22/security-high.svg</file>
     <file>breezedark/status/22/user-away.svg</file>
+    <file>breezedark/status/22/irc-channel-joined.svg</file>
     <file>breezedark/status/64/security-low.svg</file>
     <file>breezedark/status/64/dialog-information.svg</file>
     <file>breezedark/status/64/security-high.svg</file>

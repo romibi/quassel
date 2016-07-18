@@ -145,6 +145,21 @@ bool QtUiApplication::init()
             return false;
         }
 
+        // Checking if settings Icon Theme is valid
+        QString savedIcontheme = QtUiSettings().value("IconTheme", QVariant("")).toString();
+#ifndef WITH_OXYGEN
+        if (savedIcontheme == "oxygen")
+            QtUiSettings().remove("IconTheme");
+#endif
+#ifndef WITH_BREEZE
+        if (savedIcontheme == "breeze")
+            QtUiSettings().remove("IconTheme");
+#endif
+#ifndef WITH_BREEZE_DARK
+        if (savedIcontheme == "breezedark")
+            QtUiSettings().remove("IconTheme");
+#endif
+
         // Set the icon theme
         if (Quassel::isOptionSet("icontheme"))
             QIcon::setThemeName(Quassel::optionValue("icontheme"));

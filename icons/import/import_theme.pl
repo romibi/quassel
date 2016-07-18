@@ -41,6 +41,19 @@ while(<BLACKLIST>) {
 }
 close BLACKLIST;
 
+my $hasthemeblacklist = 1;
+open BLACKLIST, "<$blacklistfile.$themename" or $hasthemeblacklist = 0;
+if ($hasthemeblacklist) {
+  while(<BLACKLIST>) {
+    s/#.*//;
+    next unless my ($name) = /([-\w]+)\s*/;
+    $blacklist{$name} = 1;
+  }
+  close BLACKLIST;
+} else {
+  print "Info: No theme specific blacklist found...\n";
+}
+
 # We now grep the source for things like SmallIcon("fubar") and generate size and name from that
 print "Grepping $source for requested icons...\n";
 my @results = `grep -r QIcon::fromTheme\\(\\" $source`;
@@ -72,7 +85,7 @@ my $scalableFound = 0;
 foreach my $parent (readdir BASEDIR) {
   next unless (-d "$themefolder/$parent");
   $scalableFound = $scalableFound ? 1 : $parent eq 'scalable';
-  next if $parent eq '.' or $parent eq '..' or $parent eq 'scalable';
+  next if $parent eq '.' or $parent eq '..' or $parent eq 'scalable' or $parent =~ /\..*/;
   my $ischildcat = $parent =~ /\d+x\d+/ ? 1 : 0;
   opendir (SIZEDIR, "$themefolder/$parent") or die "Could not open dir $parent\n";
   foreach my $child (readdir SIZEDIR) {

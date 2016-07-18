@@ -113,7 +113,6 @@ void AppearanceSettingsPage::initIconThemeComboBox()
 # endif
 #else
     ui.iconthemeComboBox->hide();
-    QtUiSettings().remove("IconTheme");
 #endif
 }
 
