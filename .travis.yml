@@ -49,7 +49,7 @@ script: |-
     then
       PATH=$PATH:/usr/local/opt/qt5/bin
       # The LDAP headers found in OSX Frameworks seem to be broken
-      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DDEPLOY=ON -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DLDAP_INCLUDE_DIR=/usr/include/
+      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DDEPLOY=ON -DWITH_BREEZE=ON -DWITH_BREEZE_DARK=ON -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DLDAP_INCLUDE_DIR=/usr/include/
     else
       cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DLDAP_INCLUDE_DIR=/usr/include/
     fi
