@@ -22,6 +22,9 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QScrollBar>
+#if QT_VERSION >= 0x050000
+#include <QScroller>
+#endif
 
 #include "bufferwidget.h"
 #include "chatscene.h"
@@ -88,6 +91,10 @@ void ChatView::init(MessageFilter *filter)
     // only connect if client is synched with a core
     if (Client::isConnected())
         connect(Client::ignoreListManager(), SIGNAL(ignoreListChanged()), this, SLOT(invalidateFilter()));
+
+#if QT_VERSION >= 0x050000
+	QScroller::grabGesture(this, QScroller::LeftMouseButtonGesture);
+#endif
 }
 
 
@@ -109,13 +116,28 @@ bool ChatView::event(QEvent *event)
         }
     }
 
+	if (event->type() == QEvent::ScrollPrepare) {
+		QScrollPrepareEvent* e = (QScrollPrepareEvent*)event;
+		qDebug() << "scrollprepare event yay";
+		qDebug() << horizontalScrollBar()->minimum() << "," << verticalScrollBar()->minimum() << "," <<
+			horizontalScrollBar()->maximum() << "," << verticalScrollBar()->maximum();
+		//e->setViewportSize(this->viewport()->rect().size());
+		e->setContentPosRange(QRectF(horizontalScrollBar()->minimum(), verticalScrollBar()->minimum(),
+			horizontalScrollBar()->maximum(), verticalScrollBar()->maximum()));
+		e->setContentPos(QPointF(horizontalScrollBar()->sliderPosition(), verticalScrollBar()->sliderPosition()));
+		e->accept();
+		return true;
+	}
+	
 #if QT_VERSION >= 0x050000
     if (event->type() == QEvent::TouchBegin && ((QTouchEvent*)event)->device()->type()==QTouchDevice::TouchScreen) {
 #else
     if (event->type() == QEvent::TouchBegin && ((QTouchEvent*)event)->deviceType()==QTouchEvent::TouchScreen) {
 #endif
         // Enable scrolling by draging, disable selecting/clicking content
+#if QT_VERSION < 0x050000
         setDragMode(QGraphicsView::ScrollHandDrag);
+#endif
         setInteractive(false);
         // if scrollbar is not visible we need to request backlog below else we need to accept
         // the event now (return true) so that we will receive TouchUpdate and TouchEnd/TouchCancel
@@ -128,7 +150,9 @@ bool ChatView::event(QEvent *event)
     if (event->type() == QEvent::TouchEnd) {
 #endif
         // End scroll and reset settings to default
+#if QT_VERSION < 0x050000
         setDragMode(QGraphicsView::NoDrag);
+#endif
         setInteractive(true);
         _firstTouchUpdateHappened = false;
         return true;
@@ -142,7 +166,9 @@ bool ChatView::event(QEvent *event)
             double dx = qAbs(p.lastPos().x() - p.pos().x());
             double dy = qAbs(p.lastPos().y() - p.pos().y());
             if (dx > dy) {
+#if QT_VERSION < 0x050000
                 setDragMode(QGraphicsView::NoDrag);
+#endif
                 setInteractive(true);
             }
             _firstTouchUpdateHappened = true;
@@ -205,6 +231,9 @@ void ChatView::adjustSceneRect()
     // by some hopefully large enough value to avoid this problem.
 
     setSceneRect(scene()->sceneRect().adjusted(0, 0, -25, 0));
+	//qDebug() << "adjust Scene Rect";
+	//QScroller::scroller(this)->;
+	//QScroller::grabGesture(this, QScroller::TouchGesture);
 }
 
 
