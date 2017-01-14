@@ -33,6 +33,7 @@
 #  include <QTcpSocket>
 #  include <QTcpServer>
 #endif
+#include <QtWebSockets\QWebSocketServer>
 
 #include "bufferinfo.h"
 #include "message.h"
@@ -584,8 +585,10 @@ private:
 
 #ifdef HAVE_SSL
     SslServer _server, _v6server;
+	QWebSocketServer _wsserver{ QStringLiteral("Quassel Websocket"), QWebSocketServer::SecureMode };
 #else
     QTcpServer _server, _v6server;
+	QWebSocketServer _wsserver{ QStringLiteral("Quassel Websocket"), QWebSocketServer::NonSecureMode };
 #endif
 
     OidentdConfigGenerator *_oidentdConfigGenerator;

@@ -173,6 +173,8 @@ int main(int argc, char **argv)
     cliParser->addOption("ssl-key", 0, "Specify the path to the SSL key", "path", "ssl-cert-path");
 #endif
     cliParser->addSwitch("enable-experimental-dcc", 0, "Enable highly experimental and unfinished support for CTCP DCC (DANGEROUS)");
+	cliParser->addSwitch("enable-websocket", 0, "Enable (experimental) websocket for a more reliable connection with Quassel-Webserver");
+	cliParser->addOption("websocket-port", 'w', "Set a custom Port for the websocket for Quassel-Webserver", "port", "64443");
 #endif
 
 #ifdef HAVE_KDE4

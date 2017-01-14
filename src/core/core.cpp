@@ -209,6 +209,9 @@ void Core::init()
 
     connect(&_server, SIGNAL(newConnection()), this, SLOT(incomingConnection()));
     connect(&_v6server, SIGNAL(newConnection()), this, SLOT(incomingConnection()));
+	if (Quassel::isOptionSet("enable-websocket")) {
+		connect(&_wsserver, SIGNAL(newConnection()), this, SLOT(incomingConnection()));
+	}
     if (!startListening()) exit(1);  // TODO make this less brutal
 
     if (Quassel::isOptionSet("oidentd"))
@@ -513,6 +516,18 @@ bool Core::startListening()
                 }
             }
         }
+		if (Quassel::isOptionSet("enable-websocket")) {
+			QHostAddress addr;
+			uint port = Quassel::optionValue("websocket-port").toUInt();
+			if (addr.setAddress("127.0.0.1") && _wsserver.listen(addr, port)) {
+				quInfo() << qPrintable(
+					tr("Listening for Websocket clients on %1 websocket port %2 using protocol version %3")
+						.arg(addr.toString())
+						.arg(_wsserver.serverPort())
+						.arg(Quassel::buildInfo().protocolVersion)
+						);
+			}
+		}
     }
     if (!success)
         quError() << qPrintable(tr("Could not open any network interfaces to listen on!"));
