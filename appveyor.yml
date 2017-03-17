@@ -36,6 +36,8 @@ build_script:
     LogExec cmake -G"Ninja" $env:APPVEYOR_BUILD_FOLDER -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$CMAKE_INSTALL_ROOT" -DUSE_QT5=ON -DWITH_BREEZE=ON -DWITH_BREEZE_DARK=ON -DWITH_OXYGEN=ON $webPrevOption
     CmakeImageInstall
 
+deploy_script:
+- ps: |
     $whitelist = @(
                             # whitelist
                             #quassel
