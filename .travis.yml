@@ -37,7 +37,8 @@ install: |-
   elif [ "$TRAVIS_OS_NAME" == "osx" ]
   then
     brew update
-    brew install ninja qt5
+    brew tap haraldf/kf5
+    brew install ninja qt5 dbus haraldf/kf5/kf5-sonnet
   fi
 
 script: |-
