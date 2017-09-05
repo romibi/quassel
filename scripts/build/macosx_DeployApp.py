@@ -209,7 +209,7 @@ class InstallQt(object):
         otoolPipe = Popen('otool -L "%s"' % app, shell=True, stdout=PIPE).stdout
         otoolOutput = [line for line in otoolPipe]
         otoolPipe.close()
-        libs = [line.split()[0] for line in otoolOutput[1:] if ("Qt" in line or "phonon" in line) and "@executable_path" not in line]
+        libs = [line.split()[0] for line in otoolOutput[1:] if ("Qt" in line or "qt5" in line  or "KF5" in line or "phonon" in line) and "@executable_path" not in line]
         frameworks = [lib[:lib.find(".framework") + len(".framework")] for lib in libs]
         frameworks = [framework[framework.rfind('/') + 1:] for framework in frameworks]
         return zip(frameworks, libs)
