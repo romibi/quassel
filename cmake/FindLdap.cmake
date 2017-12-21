@@ -15,6 +15,10 @@ endif(LDAP_INCLUDE_DIR AND LDAP_LIBRARIES)
 
 # Attempt to link against ldap.h regardless of platform!
 FIND_PATH(LDAP_INCLUDE_DIR ldap.h)
+# On osx replace invalid ldap.h 
+if("${LDAP_INCLUDE_DIR}" STREQUAL "/System/Library/Frameworks/LDAP.framework/Headers")
+  set(LDAP_INCLUDE_DIR "/usr/include/")
+endif()
 FIND_LIBRARY(LDAP_LIBRARIES NAMES ldap)
 FIND_LIBRARY(LBER_LIBRARIES NAMES lber)
 

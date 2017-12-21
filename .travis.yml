@@ -1,6 +1,5 @@
 os:
   - linux
-  - osx
 
 sudo: required
 dist: trusty
@@ -16,9 +15,13 @@ env:
   - QT_VERSION=qt5
 
 matrix:
-  exclude:
+  include:
     - os: osx
-      compiler: clang
+      compiler: gcc
+      env: QT_VERSION=qt5
+      osx_image: xcode6.4
+  exclude:
+    - compiler: clang
 
 install: |-
   if [ "$TRAVIS_OS_NAME" == "linux" ]
@@ -45,13 +48,12 @@ script: |-
     make
   elif [ "$TRAVIS_OS_NAME" == "osx" ]
   then
+    PATH=$PATH:/usr/local/opt/qt5/bin
     if [[ "$TRAVIS_TAG" != "" && "$GH_TOKEN" != "" ]]
     then
-      PATH=$PATH:/usr/local/opt/qt5/bin
-      # The LDAP headers found in OSX Frameworks seem to be broken
-      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DDEPLOY=ON -DWITH_BREEZE=ON -DWITH_BREEZE_DARK=ON -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DLDAP_INCLUDE_DIR=/usr/include/
+      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DDEPLOY=ON -DWITH_BREEZE=ON -DWITH_BREEZE_DARK=ON
     else
-      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DLDAP_INCLUDE_DIR=/usr/include/
+      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release
     fi
     ninja install
   fi
