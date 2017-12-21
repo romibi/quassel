@@ -13,17 +13,12 @@ compiler:
   - clang
 
 env:
-  - QT_VERSION=qt4
   - QT_VERSION=qt5
 
 matrix:
   exclude:
-    - compiler: clang
-      env: QT_VERSION=qt4
     - os: osx
       compiler: clang
-    - os: osx
-      env: QT_VERSION=qt4
 
 install: |-
   if [ "$TRAVIS_OS_NAME" == "linux" ]
@@ -54,7 +49,7 @@ script: |-
     then
       PATH=$PATH:/usr/local/opt/qt5/bin
       # The LDAP headers found in OSX Frameworks seem to be broken
-      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DDEPLOY=ON -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DLDAP_INCLUDE_DIR=/usr/include/
+      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DDEPLOY=ON -DWITH_BREEZE=ON -DWITH_BREEZE_DARK=ON -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DLDAP_INCLUDE_DIR=/usr/include/
     else
       cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/opt/qt5 -DLDAP_INCLUDE_DIR=/usr/include/
     fi
