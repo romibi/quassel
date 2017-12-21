@@ -26,7 +26,7 @@
 #include "qtui.h"
 
 CoreHighlightSettingsPage::CoreHighlightSettingsPage(QWidget *parent)
-    : SettingsPage(tr("Interface"), tr("Core-Side Highlights"), parent)
+    : SettingsPage(tr("Interface"), tr("Remote Highlights"), parent)
 {
     ui.setupUi(this);
 
@@ -37,8 +37,12 @@ CoreHighlightSettingsPage::CoreHighlightSettingsPage(QWidget *parent)
     ui.highlightNicksComboBox->addItem(tr("Current Nick"), QVariant(HighlightRuleManager::CurrentNick));
     ui.highlightNicksComboBox->addItem(tr("None"), QVariant(HighlightRuleManager::NoNick));
 
+    coreConnectionStateChanged(Client::isConnected()); // need a core connection!
+    connect(Client::instance(), SIGNAL(coreConnectionStateChanged(bool)), this, SLOT(coreConnectionStateChanged(bool)));
+
     connect(ui.highlightAdd, SIGNAL(clicked(bool)), this, SLOT(addNewHighlightRow()));
     connect(ui.highlightRemove, SIGNAL(clicked(bool)), this, SLOT(removeSelectedHighlightRows()));
+    connect(ui.highlightImport, SIGNAL(clicked(bool)), this, SLOT(importRules()));
 
     connect(ui.ignoredAdd, SIGNAL(clicked(bool)), this, SLOT(addNewIgnoredRow()));
     connect(ui.ignoredRemove, SIGNAL(clicked(bool)), this, SLOT(removeSelectedIgnoredRows()));
@@ -74,6 +78,16 @@ CoreHighlightSettingsPage::CoreHighlightSettingsPage(QWidget *parent)
             SLOT(ignoredTableChanged(QTableWidgetItem * )));
 
     connect(Client::instance(), SIGNAL(connected()), this, SLOT(clientConnected()));
+}
+
+void CoreHighlightSettingsPage::coreConnectionStateChanged(bool state)
+{
+    setEnabled(state);
+    if (state) {
+        load();
+    } else {
+        revert();
+    }
 }
 
 void CoreHighlightSettingsPage::setupRuleTable(QTableWidget *table) const
@@ -456,4 +470,33 @@ void CoreHighlightSettingsPage::save()
 void CoreHighlightSettingsPage::widgetHasChanged()
 {
     setChangedState(true);
+}
+
+void CoreHighlightSettingsPage::importRules() {
+    NotificationSettings notificationSettings;
+
+    auto clonedManager = HighlightRuleManager();
+    clonedManager.fromVariantMap(Client::highlightRuleManager()->toVariantMap());
+
+    for (const auto &variant : notificationSettings.highlightList()) {
+        auto highlightRule = variant.toMap();
+
+        clonedManager.addHighlightRule(
+                highlightRule["Name"].toString(),
+                highlightRule["RegEx"].toBool(),
+                highlightRule["CS"].toBool(),
+                highlightRule["Enable"].toBool(),
+                false,
+                "",
+                highlightRule["Channel"].toString()
+        );
+    }
+
+    Client::highlightRuleManager()->requestUpdate(clonedManager.toVariantMap());
+    setChangedState(false);
+    load();
+}
+
+bool CoreHighlightSettingsPage::isSelectable() const {
+    return Client::isConnected() && Client::coreFeatures().testFlag(Quassel::Feature::CoreSideHighlights);
 }
