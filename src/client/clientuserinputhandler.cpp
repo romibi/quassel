@@ -118,7 +118,7 @@ void ClientUserInputHandler::handleQuery(const BufferInfo &bufferInfo, const QSt
 
 void ClientUserInputHandler::handleList(const BufferInfo &bufferInfo, const QString &text)
 {
-    emit Client::instance()->showChannelList(bufferInfo.networkId());
+    Client::instance()->displayChannelList(bufferInfo.networkId());
 }
 
 
