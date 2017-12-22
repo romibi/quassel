@@ -116,6 +116,12 @@ void ClientUserInputHandler::handleQuery(const BufferInfo &bufferInfo, const QSt
 }
 
 
+void ClientUserInputHandler::handleList(const BufferInfo &bufferInfo, const QString &text)
+{
+    emit Client::instance()->showChannelList(bufferInfo.networkId());
+}
+
+
 void ClientUserInputHandler::switchBuffer(const NetworkId &networkId, const QString &bufferName)
 {
     BufferId newBufId = Client::networkModel()->bufferId(networkId, bufferName);
