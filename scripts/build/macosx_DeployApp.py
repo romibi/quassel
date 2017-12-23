@@ -45,12 +45,12 @@ class InstallQt(object):
         self.installedFrameworks = set()
 
         self.findFrameworkPath()
+        self.findPluginsPath()
 
         executables = [self.executableDir + "/" + executable for executable in os.listdir(self.executableDir)]
         for executable in executables:
             self.resolveDependancies(executable)
 
-        self.findPluginsPath()
         self.installPlugins(requestedPlugins)
         if not skipInstallQtConf:
             self.installQtConf()
@@ -99,35 +99,44 @@ class InstallQt(object):
             raise OSError
         return result
 
-    def installPlugins(self, requestedPlugins):
+    def installPlugins(self, requestedPlugins, fromPath=False):
         try:
             os.mkdir(self.pluginDir)
         except:
             pass
 
         for plugin in requestedPlugins:
-            if not plugin.isalnum():
-                print "Skipping library '%s'..." % plugin
-                continue
+            if not fromPath:
+                if not plugin.isalnum():
+                    print "Skipping library '%s'..." % plugin
+                    continue
 
-            pluginName = "lib%s.dylib" % plugin
-            pluginSource = ''
-            try:
-                pluginSource = self.findPlugin(pluginName)
-            except OSError:
-                print "WARNING: Requested library does not exist: '%s'" % plugin
-                continue
+                pluginName = "lib%s.dylib" % plugin
+                pluginSource = ''
+                try:
+                    pluginSource = self.findPlugin(pluginName)
+                except OSError:
+                    print "WARNING: Requested library does not exist: '%s'" % plugin
+                    continue
 
-            pluginSubDir = os.path.dirname(pluginSource)
-            pluginSubDir = pluginSubDir.replace(self.sourcePluginsPath, '').strip('/')
-            try:
-                os.mkdir("%s/%s" % (self.pluginDir, pluginSubDir))
-            except OSError:
-                pass
+                pluginSubDir = os.path.dirname(pluginSource)
+                pluginSubDir = pluginSubDir.replace(self.sourcePluginsPath, '').strip('/')
+                try:
+                    os.mkdir("%s/%s" % (self.pluginDir, pluginSubDir))
+                except OSError:
+                    pass
 
-            os.system('cp "%s" "%s/%s"' % (pluginSource, self.pluginDir, pluginSubDir))
+                os.system('cp "%s" "%s/%s"' % (pluginSource, self.pluginDir, pluginSubDir))
 
-            self.resolveDependancies("%s/%s/%s" % (self.pluginDir, pluginSubDir, pluginName))
+                self.resolveDependancies("%s/%s/%s" % (self.pluginDir, pluginSubDir, pluginName))
+            else:
+                pluginName = "%s.dylib" % plugin
+
+                if not os.path.exists("%s/%s" % (self.pluginDir, pluginName)):
+                    os.system('cp "%s" "%s/%s"' % (fromPath, self.pluginDir, pluginName))
+                    self.resolveDependancies("%s/%s" % (self.pluginDir, pluginName))
+
+
 
     def installQtConf(self):
         qtConfName = self.appDir + "/qt.conf"
@@ -143,11 +152,13 @@ class InstallQt(object):
     def resolveDependancies(self, obj):
         # obj must be either an application binary or a framework library
         # print "resolving deps for:", obj
-        for framework, lib in self.determineDependancies(obj):
-            self.installFramework(framework)
+        for framework, frameworkFullPath, lib in self.determineDependancies(obj):
+            if framework=="":
+                continue
+            self.installFramework(framework, frameworkFullPath)
             self.changeDylPath(obj, framework, lib)
 
-    def installFramework(self, framework):
+    def installFramework(self, framework, frameworkFullPath):
         # skip if framework is already installed.
         if framework in self.installedFrameworks:
             return
@@ -166,10 +177,9 @@ class InstallQt(object):
         except:
             pass
 
-        if not framework.startswith('/'):
-            framework = "%s/%s" % (self.sourceFrameworkPath, framework)
 
-        frameworkname = framework.split('/')[-1]
+        frameworkname = framework
+
         localframework = self.frameworkDir + "/" + frameworkname
 
         # Framework already installed in previous run ... see above
@@ -177,7 +187,7 @@ class InstallQt(object):
             return
 
         # Copy Framework
-        os.system('cp -R "%s" "%s"' % (framework, self.frameworkDir))
+        os.system('cp -R "%s" "%s"' % (frameworkFullPath, self.frameworkDir))
 
         # De-Myllify
         os.system('find "%s" -name *debug* -exec rm -f {} \;' % localframework)
@@ -209,15 +219,30 @@ class InstallQt(object):
         otoolPipe = Popen('otool -L "%s"' % app, shell=True, stdout=PIPE).stdout
         otoolOutput = [line for line in otoolPipe]
         otoolPipe.close()
-        libs = [line.split()[0] for line in otoolOutput[1:] if ("Qt" in line or "phonon" in line) and "@executable_path" not in line]
-        frameworks = [lib[:lib.find(".framework") + len(".framework")] for lib in libs]
+        libs = [line.split()[0] for line in otoolOutput[1:] if ("Qt" in line or "qt5" in line  or "KF5" in line or "phonon" in line) and "@executable_path" not in line]
+        frameworks = []
+        for lib in libs:
+            if lib.find(".framework")>=0:
+                frameworks.append(lib[:lib.find(".framework") + len(".framework")])
+            elif lib.find(".dylib")>=0:
+                dylibname = lib[:lib.find(".dylib")]
+                dylibname = dylibname[dylibname.rfind("/lib") + len("/lib"):]
+                self.installPlugins([dylibname], lib)
+                self.changeDylPath(app, dylibname, lib)
+                frameworks.append("")
+            else:
+                frameworks.append("");
+        frameworksFullPaths = frameworks
         frameworks = [framework[framework.rfind('/') + 1:] for framework in frameworks]
-        return zip(frameworks, libs)
+        return zip(frameworks, frameworksFullPaths, libs)
 
     def changeDylPath(self, obj, framework, lib):
         newlibname = framework + lib.split(framework)[1]
         if self.bundle:
-            newlibname = "@executable_path/../Frameworks/%s" % newlibname
+            if "dylib" in lib:
+                newlibname = "@executable_path/../plugins/%s" % newlibname
+            else :
+                newlibname = "@executable_path/../Frameworks/%s" % newlibname
         else:
             newlibname = "@executable_path/Frameworks/%s" % newlibname
 
