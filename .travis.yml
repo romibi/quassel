@@ -36,7 +36,7 @@ install: |-
   elif [ "$TRAVIS_OS_NAME" == "osx" ]
   then
     brew update
-    brew tap DKE-mac/kde
+    brew tap KDE-mac/kde
     brew install ninja qt5 dbus kf5-sonnet
   fi
 
