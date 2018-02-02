@@ -110,9 +110,17 @@ SettingsPage *SnoreNotificationBackend::createConfigWidget()const
 void SnoreNotificationBackend::setTraybackend(const QVariant &b)
 {
 #ifndef HAVE_KDE
-    if (m_systrayBackend == nullptr) {
-        m_systrayBackend = new SystrayNotificationBackend(this);
-        QtUi::registerNotificationBackend(m_systrayBackend);
+    if (!b.toBool()) {
+        if (m_systrayBackend == nullptr) {
+            m_systrayBackend = new SystrayNotificationBackend(this);
+            QtUi::registerNotificationBackend(m_systrayBackend);
+        }
+    } else {
+        if (m_systrayBackend != nullptr) {
+            QtUi::unregisterNotificationBackend(m_systrayBackend);
+            m_systrayBackend->deleteLater();
+            m_systrayBackend = nullptr;
+        }
     }
 #endif
     if (b.toBool()) {
