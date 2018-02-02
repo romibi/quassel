@@ -80,6 +80,6 @@ case $BUILDTYPE in
 	exit 1
 	;;
 esac
-PACKAGESIZE=$(echo "$(du -ms ${PACKAGETMPDIR} | cut -f1) * 1.05" | bc)
+PACKAGESIZE=$(echo "$(du -ms ${PACKAGETMPDIR} | cut -f1) * 1.1" | bc)
 hdiutil create -srcfolder ${PACKAGETMPDIR} -format UDBZ -size ${PACKAGESIZE}M -volname "Quassel ${BUILDTYPE} - ${QUASSEL_VERSION}" "${WORKINGDIR}${QUASSEL_DMG}" >/dev/null
 rm -rf ${PACKAGETMPDIR}

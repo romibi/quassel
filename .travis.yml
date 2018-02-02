@@ -19,9 +19,9 @@ matrix:
     - os: osx
       compiler: gcc
       env: QT_VERSION=qt5
-      osx_image: xcode6.4
   exclude:
     - compiler: clang
+      env: QT_VERSION=qt4
 
 install: |-
   if [ "$TRAVIS_OS_NAME" == "linux" ]
@@ -51,7 +51,7 @@ script: |-
     PATH=$PATH:/usr/local/opt/qt5/bin
     if [[ "$TRAVIS_TAG" != "" && "$GH_TOKEN" != "" ]]
     then
-      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DDEPLOY=ON -DWITH_BREEZE=ON -DWITH_BREEZE_DARK=ON
+      cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release -DDEPLOY=ON
     else
       cmake -G"Ninja" .. -DCMAKE_BUILD_TYPE=Release
     fi
