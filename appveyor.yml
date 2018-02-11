@@ -151,6 +151,6 @@ environment:
 test: off
 
 cache:
-    - work\install -> appveyor.yml
-    - C:\ProgramData\chocolatey\bin -> appveyor.yml
-    - C:\ProgramData\chocolatey\lib -> appveyor.yml
+    - work\install -> appveyor.yml, scripts\build\appveyorHelp.psm1
+    - C:\ProgramData\chocolatey\bin -> appveyor.yml, scripts\build\appveyorHelp.psm1
+    - C:\ProgramData\chocolatey\lib -> appveyor.yml, scripts\build\appveyorHelp.psm1
