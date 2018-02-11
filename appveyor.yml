@@ -138,7 +138,11 @@ build_script:
     if(Test-Path "$imageDir\hunspell")
     {
         mv "$imageDir\hunspell\*" "$imageDir\"
+    } else {
+        mkdir "$imageDir\hunspell"
     }
+
+    cp "$env:APPVEYOR_BUILD_FOLDER\data\hunspell-dictionaries\*" "$imageDir\hunspell\"
 
     if(Test-Path "$imageDir\lib\plugins")
     {
