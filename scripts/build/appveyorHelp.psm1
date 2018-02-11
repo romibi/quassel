@@ -210,11 +210,13 @@ function Install-Hunspell([string] $url, [hashtable] $arguments)
             $env:INCLUDE = "$env:INCLUDE;$env:APPVEYOR_BUILD_FOLDER\work\git\$module\src\hunspell"
         }
     } else {
-        LogExec autoreconf -vfi
-        LogExec ./configure
-        LogExec make
-        LogExec make install
-        LogExec ldconfig
+        LogExec sh -l -c "pacman --noconfirm -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool mingw-w64-x86_64-boost"
+
+        LogExec sh -l -c "autoreconf -vfi"
+        LogExec sh -l -c "./configure"
+        LogExec sh -l -c "make"
+        LogExec sh -l -c "make install"
+        LogExec sh -l -c "ldconfig"
     }
     popd
 }
