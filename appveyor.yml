@@ -161,8 +161,8 @@ environment:
 
     matrix:
     #msvc
-    - COMPILER: msvc2015_64
-    - COMPILER: msvc2015
+    #- COMPILER: msvc2015_64
+    #- COMPILER: msvc2015
 
     #mingw
     - COMPILER: mingw53_32
