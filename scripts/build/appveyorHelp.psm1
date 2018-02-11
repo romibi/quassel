@@ -173,15 +173,15 @@ function Install-Hunspell([string] $url, [hashtable] $arguments)
         $arguments["buildType"] = "Release"
     }
 
+    mkdir -Force $env:APPVEYOR_BUILD_FOLDER\work\build\$module
+    pushd $env:APPVEYOR_BUILD_FOLDER\work\git
+    LogExec git clone -q --depth 1 --branch ([string]$arguments["branch"]) $url $module
+    popd
+    pushd  $env:APPVEYOR_BUILD_FOLDER\work\build\$module
+
     [string] $compiler=$env:COMPILER
     if($compiler.StartsWith("msvc"))
     {
-        mkdir -Force $env:APPVEYOR_BUILD_FOLDER\work\build\$module
-        pushd $env:APPVEYOR_BUILD_FOLDER\work\git
-        LogExec git clone -q --depth 1 --branch ([string]$arguments["branch"]) $url $module
-        popd
-        pushd  $env:APPVEYOR_BUILD_FOLDER\work\build\$module
-
         $arch = "Win32"
         $binpath = "Release_dll\libhunspell"
         if($compiler.EndsWith("64"))
@@ -209,30 +209,14 @@ function Install-Hunspell([string] $url, [hashtable] $arguments)
         } else {
             $env:INCLUDE = "$env:INCLUDE;$env:APPVEYOR_BUILD_FOLDER\work\git\$module\src\hunspell"
         }
-
-        popd
     } else {
-        Install-ChocolateyModule "hunspell.portable"
-        $env:PATH = "$env:PATH;C:\ProgramData\chocolatey\lib\hunspell.portable\tools\bin"
-        
-        if(!$env:LIB) {
-            $env:LIB = "C:\ProgramData\chocolatey\lib\hunspell.portable\tools\lib"
-        } else {
-            $env:LIB = "$env:LIB;C:\ProgramData\chocolatey\lib\hunspell.portable\tools\lib"
-        }
-        
-        if(!$env:INCLUDE) {
-            $env:INCLUDE = "C:\ProgramData\chocolatey\lib\hunspell.portable\tools\include\hunspell"
-        } else {
-            $env:INCLUDE = "$env:INCLUDE;C:\ProgramData\chocolatey\lib\hunspell.portable\tools\include\hunspell"
-        }
-        if(!(Test-Path "$env:APPVEYOR_BUILD_FOLDER\work\install\hunspell"))
-        {
-            mkdir "$env:APPVEYOR_BUILD_FOLDER\work\install\hunspell"
-        }
-
-        cp -r -Force C:\ProgramData\chocolatey\lib\hunspell.portable\tools\bin\* $env:APPVEYOR_BUILD_FOLDER\work\install\hunspell
+        LogExec autoreconf -vfi
+        LogExec ./configure
+        LogExec make
+        LogExec make install
+        LogExec ldconfig
     }
+    popd
 }
 
 function Init([string[]] $chocoDeps, [System.Collections.Specialized.OrderedDictionary] $sourceModules)
