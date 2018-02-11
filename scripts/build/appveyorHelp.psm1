@@ -226,7 +226,7 @@ function Install-Hunspell([string] $url, [hashtable] $arguments)
         } else {
             $env:INCLUDE = "$env:INCLUDE;C:\ProgramData\chocolatey\lib\hunspell.portable\tools\include\hunspell"
         }
-        if(!Test-Path "$env:APPVEYOR_BUILD_FOLDER\work\install\hunspell")
+        if(!(Test-Path "$env:APPVEYOR_BUILD_FOLDER\work\install\hunspell"))
         {
             mkdir "$env:APPVEYOR_BUILD_FOLDER\work\install\hunspell"
         }
