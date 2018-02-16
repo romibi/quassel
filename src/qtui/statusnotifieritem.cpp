@@ -31,6 +31,7 @@
 #include "quassel.h"
 #include "statusnotifieritem.h"
 #include "statusnotifieritemdbus.h"
+#include "uisettings.h"
 
 const int StatusNotifierItem::_protocolVersion = 0;
 const QString StatusNotifierItem::_statusNotifierWatcherServiceName("org.kde.StatusNotifierWatcher");
