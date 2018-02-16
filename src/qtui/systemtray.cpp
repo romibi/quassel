@@ -39,12 +39,20 @@ SystemTray::SystemTray(QWidget *parent)
     _mode(Invalid),
     _state(Passive),
     _shouldBeVisible(true),
-    _passiveIcon(QIcon::fromTheme("inactive-quassel-tray", QIcon(":/icons/inactive-quassel-tray.png"))),
-    _activeIcon(QIcon::fromTheme("active-quassel-tray", QIcon(":/icons/active-quassel-tray.png"))),
-    _needsAttentionIcon(QIcon::fromTheme("message-quassel-tray", QIcon(":/icons/message-quassel-tray.png"))),
     _trayMenu(0),
     _associatedWidget(parent)
 {
+    UiStyleSettings s;
+    if (s.value("IconThemeTrayInvert").toBool()) {
+        _passiveIcon = QIcon::fromTheme("inactive-quassel-tray-inverted", QIcon(":/icons/inactive-quassel-tray-inverted.png"));
+        _activeIcon = QIcon::fromTheme("active-quassel-tray-inverted", QIcon(":/icons/active-quassel-tray-inverted.png"));
+        _needsAttentionIcon = QIcon::fromTheme("message-quassel-tray-inverted", QIcon(":/icons/message-quassel-tray-inverted.png"));
+    }
+    else {
+        _passiveIcon = QIcon::fromTheme("inactive-quassel-tray", QIcon(":/icons/inactive-quassel-tray.png"));
+        _activeIcon = QIcon::fromTheme("active-quassel-tray", QIcon(":/icons/active-quassel-tray.png"));
+        _needsAttentionIcon = QIcon::fromTheme("message-quassel-tray", QIcon(":/icons/message-quassel-tray.png"));
+    }
     Q_ASSERT(parent);
 }
 
