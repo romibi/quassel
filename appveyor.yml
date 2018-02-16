@@ -166,7 +166,7 @@ environment:
     - COMPILER: msvc2015
 
     #mingw
-    - COMPILER: mingw53_32
+    #- COMPILER: mingw53_32
 
 test: off
 
