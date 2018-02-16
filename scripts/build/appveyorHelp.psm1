@@ -128,6 +128,17 @@ function Install-ChocolateyModule([string] $module, [string[]] $myargs)
     # And https://github.com/appveyor/ci/issues/418
 }
 
+function Install-SourceGitModule([string] $url, [hashtable] $arguments)
+{
+    if(!$arguments.Contains("buildTool"))
+    {
+        Install-CmakeGitModule $url $arguments
+    }
+    if($arguments["buildTool"] -eq "scriptHunspell") {
+        Install-Hunspell $url $arguments
+    }
+}
+
 function Install-CmakeGitModule([string] $url, [hashtable] $arguments)
 {
     $module = $url.SubString($url.LastIndexOf("/")+1)
@@ -150,7 +161,81 @@ function Install-CmakeGitModule([string] $url, [hashtable] $arguments)
     popd
 }
 
-function Init([string[]] $chocoDeps, [System.Collections.Specialized.OrderedDictionary] $cmakeModules)
+function Install-Hunspell([string] $url, [hashtable] $arguments)
+{
+    $module = $url.SubString($url.LastIndexOf("/")+1)
+    if(!$arguments.Contains("branch"))
+    {
+        $arguments["branch"] = "master"
+    }
+    if(!$arguments.Contains("buildType"))
+    {
+        $arguments["buildType"] = "Release"
+    }
+
+    [string] $compiler=$env:COMPILER
+    if($compiler.StartsWith("msvc"))
+    {
+        mkdir -Force $env:APPVEYOR_BUILD_FOLDER\work\build\$module
+        pushd $env:APPVEYOR_BUILD_FOLDER\work\git
+        LogExec git clone -q --depth 1 --branch ([string]$arguments["branch"]) $url $module
+        popd
+        pushd  $env:APPVEYOR_BUILD_FOLDER\work\build\$module
+
+        $arch = "Win32"
+        $binpath = "Release_dll\libhunspell"
+        if($compiler.EndsWith("64"))
+        {
+            $arch = "x64"
+            $binpath = "x64\Release_dll"
+        }
+
+        LogExec msbuild $env:APPVEYOR_BUILD_FOLDER\work\git\$module\msvc\Hunspell.sln /p:Configuration=Release_dll /p:Platform=$arch
+
+        cp -r -Force $env:APPVEYOR_BUILD_FOLDER\work\git\$module\msvc\$binpath\* $env:APPVEYOR_BUILD_FOLDER\work\install\$module
+        cp $env:APPVEYOR_BUILD_FOLDER\work\install\$module\libhunspell.dll $env:APPVEYOR_BUILD_FOLDER\work\install\$module\hunspell.dll
+        cp $env:APPVEYOR_BUILD_FOLDER\work\install\$module\libhunspell.lib $env:APPVEYOR_BUILD_FOLDER\work\install\$module\hunspell.lib
+
+        $env:PATH = "$env:PATH;$env:APPVEYOR_BUILD_FOLDER\work\install\$module"
+        
+        if(!$env:LIB) {
+            $env:LIB = "$env:APPVEYOR_BUILD_FOLDER\work\install\$module"
+        } else {
+            $env:LIB = "$env:LIB;$env:APPVEYOR_BUILD_FOLDER\work\install\$module"
+        }
+        
+        if(!$env:INCLUDE) {
+            $env:INCLUDE = "$env:APPVEYOR_BUILD_FOLDER\work\git\$module\src\hunspell"
+        } else {
+            $env:INCLUDE = "$env:INCLUDE;$env:APPVEYOR_BUILD_FOLDER\work\git\$module\src\hunspell"
+        }
+
+        popd
+    } else {
+        Install-ChocolateyModule "hunspell.portable"
+        $env:PATH = "$env:PATH;C:\ProgramData\chocolatey\lib\hunspell.portable\tools\bin"
+        
+        if(!$env:LIB) {
+            $env:LIB = "C:\ProgramData\chocolatey\lib\hunspell.portable\tools\lib"
+        } else {
+            $env:LIB = "$env:LIB;C:\ProgramData\chocolatey\lib\hunspell.portable\tools\lib"
+        }
+        
+        if(!$env:INCLUDE) {
+            $env:INCLUDE = "C:\ProgramData\chocolatey\lib\hunspell.portable\tools\include\hunspell"
+        } else {
+            $env:INCLUDE = "$env:INCLUDE;C:\ProgramData\chocolatey\lib\hunspell.portable\tools\include\hunspell"
+        }
+        if(!(Test-Path "$env:APPVEYOR_BUILD_FOLDER\work\install\hunspell"))
+        {
+            mkdir "$env:APPVEYOR_BUILD_FOLDER\work\install\hunspell"
+        }
+
+        cp -r -Force C:\ProgramData\chocolatey\lib\hunspell.portable\tools\bin\* $env:APPVEYOR_BUILD_FOLDER\work\install\hunspell
+    }
+}
+
+function Init([string[]] $chocoDeps, [System.Collections.Specialized.OrderedDictionary] $sourceModules)
 {
     $script:MAKE=""
     $script:CMAKE_GENERATOR=""
@@ -180,8 +265,8 @@ function Init([string[]] $chocoDeps, [System.Collections.Specialized.OrderedDict
             Install-ChocolateyModule $module
         }
 
-        foreach($key in $cmakeModules.Keys) {
-            Install-CmakeGitModule $key $cmakeModules[$key]
+        foreach($key in $sourceModules.Keys) {
+            Install-SourceGitModule $key $sourceModules[$key]
         }
 
         [string] $compiler=$env:COMPILER

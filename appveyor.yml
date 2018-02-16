@@ -7,7 +7,9 @@ build_script:
 
     Init @("ninja", "png2ico", "nsis", "7zip.commandline") ([ordered]@{"git://anongit.kde.org/extra-cmake-modules.git" = @{"branch" = "master"};
                                  "https://github.com/Snorenotify/SnoreGrowl.git" = @{"branch" = "v0.4.0"; "buildType" = "Release"};
-                                 "git://anongit.kde.org/snorenotify.git" = @{"branch" = "v0.7.0"; "buildType" = "Release"}})
+                                 "git://anongit.kde.org/snorenotify.git" = @{"branch" = "v0.7.0"; "buildType" = "Release"};
+                                 "https://github.com/hunspell/hunspell" = @{"buildTool" = "scriptHunspell"; "branch" = "v1.6.2"; "buildType" = "Release"};
+                                 "git://anongit.kde.org/sonnet.git" = @{"branch" = "v5.43.0-rc1"; "buildType" = "Release"}})
 
 
     mkdir -Force $env:APPVEYOR_BUILD_FOLDER\work\build\$env:APPVEYOR_PROJECT_NAME
@@ -94,6 +96,13 @@ build_script:
                             "plugins\\iconengines\\(?!.*d\.dll).*\.dll$",
                             "plugins\\bearer\\(?!.*d\.dll).*\.dll$",
                             #
+                            #hunspell
+                            "libhunspell.*\.dll",
+                            #
+                            #sonnet
+                            "bin\\.*Sonnet.*\.dll",
+                            "bin\\data\\.*\\trigrams\.map",
+                            "lib\\plugins\\.*\\sonnet_hunspell\.dll", 
                             #
                             #zlib
                             "bin\\libz.dll",
@@ -126,6 +135,16 @@ build_script:
     #mv "$imageDir\lib\qca-qt5\crypto" "$imageDir\crypto"
     mv "$imageDir\qml\*" "$imageDir"
     mv "$imageDir\plugins\*" "$imageDir"
+
+    if(Test-Path "$imageDir\hunspell")
+    {
+        mv "$imageDir\hunspell\*" "$imageDir\"
+    } else {
+        mkdir "$imageDir\hunspell"
+    }
+
+    cp "$env:APPVEYOR_BUILD_FOLDER\data\hunspell-dictionaries\*" "$imageDir\hunspell\"
+
     if(Test-Path "$imageDir\lib\plugins")
     {
         mv "$imageDir\lib\plugins\*" "$imageDir"
@@ -152,6 +171,6 @@ environment:
 test: off
 
 cache:
-    - work\install -> appveyor.yml
-    - C:\ProgramData\chocolatey\bin -> appveyor.yml
-    - C:\ProgramData\chocolatey\lib -> appveyor.yml
+    - work\install -> appveyor.yml, scripts\build\appveyorHelp.psm1
+    - C:\ProgramData\chocolatey\bin -> appveyor.yml, scripts\build\appveyorHelp.psm1
+    - C:\ProgramData\chocolatey\lib -> appveyor.yml, scripts\build\appveyorHelp.psm1
