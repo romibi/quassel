@@ -45,6 +45,7 @@ set(LIBS )
 
 if(HAVE_SSL)
   set(SOURCES ${SOURCES} sslserver.cpp)
+  set(SOURCES ${SOURCES} sslwebsocketserver.cpp)
   include_directories(${OPENSSL_INCLUDE_DIR})
 endif()
 

@@ -29,6 +29,7 @@
 #ifdef HAVE_SSL
 #  include <QSslSocket>
 #  include "sslserver.h"
+//#  include "sslwebsocketserver.h"
 #else
 #  include <QTcpSocket>
 #  include <QTcpServer>
@@ -585,10 +586,12 @@ private:
 
 #ifdef HAVE_SSL
     SslServer _server, _v6server;
-	QWebSocketServer _wsserver{ QStringLiteral("Quassel Websocket"), QWebSocketServer::SecureMode };
+	//SslWebSocketServer _wsserver, _v6wsserver;
 #else
     QTcpServer _server, _v6server;
-	QWebSocketServer _wsserver{ QStringLiteral("Quassel Websocket"), QWebSocketServer::NonSecureMode };
+	//QWebSocketServer _wsserver{ QStringLiteral("Quassel Websocket"), QWebSocketServer::NonSecureMode };
+	//QWebSocketServer _v6wsserver{ QStringLiteral("Quassel Websocket"), QWebSocketServer::NonSecureMode };
+
 #endif
 
     OidentdConfigGenerator *_oidentdConfigGenerator;

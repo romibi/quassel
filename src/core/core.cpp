@@ -210,7 +210,8 @@ void Core::init()
     connect(&_server, SIGNAL(newConnection()), this, SLOT(incomingConnection()));
     connect(&_v6server, SIGNAL(newConnection()), this, SLOT(incomingConnection()));
 	if (Quassel::isOptionSet("enable-websocket")) {
-		connect(&_wsserver, SIGNAL(newConnection()), this, SLOT(incomingConnection()));
+		//connect(&_wsserver, SIGNAL(newConnection()), this, SLOT(incomingConnection()));
+		//connect(&_v6wsserver, SIGNAL(newConnection()), this, SLOT(incomingConnection()));
 	}
     if (!startListening()) exit(1);  // TODO make this less brutal
 
@@ -440,7 +441,18 @@ bool Core::reloadCerts()
     SslServer *sslServerv6 = qobject_cast<SslServer *>(&instance()->_v6server);
     bool retv6 = sslServerv6->reloadCerts();
 
-    return retv4 && retv6;
+	bool retws = true;
+	/* if (Quassel::isOptionSet("enable-websocket")) {
+		SslWebSocketServer *sslWsServerv4 = qobject_cast<SslWebSocketServer *>(&instance()->_wsserver);
+		bool retwsv4 = sslWsServerv4->reloadCerts();
+
+		SslWebSocketServer *sslWsServerv6 = qobject_cast<SslWebSocketServer *>(&instance()->_v6wsserver);
+		bool retwsv6 = sslWsServerv6->reloadCerts();
+
+		retws = retwsv4 && retwsv6;
+	} */
+
+    return retv4 && retv6 && retws;
 #else
     // SSL not supported, don't mark configuration reload as failed
     return true;
@@ -456,6 +468,8 @@ bool Core::startListening()
 
     bool success = false;
     uint port = Quassel::optionValue("port").toUInt();
+	uint wsport = Quassel::optionValue("websocket-port").toUInt();
+	bool usewebsocket = Quassel::isOptionSet("enable-websocket");
 
     const QString listen = Quassel::optionValue("listen");
     const QStringList listen_list = listen.split(",", QString::SkipEmptyParts);
@@ -480,12 +494,24 @@ bool Core::startListening()
                             );
                         success = true;
                     }
-                    else
-                        quWarning() << qPrintable(
-                            tr("Could not open IPv6 interface %1:%2: %3")
-                            .arg(addr.toString())
-                            .arg(port)
-                            .arg(_v6server.errorString()));
+					else {
+						quWarning() << qPrintable(
+							tr("Could not open IPv6 interface %1:%2: %3")
+							.arg(addr.toString())
+							.arg(port)
+							.arg(_v6server.errorString()));
+					}
+					/* if (_v6wsserver.listen(addr, wsport)) {
+						quInfo() << qPrintable(
+							tr("Listening for WebSocket clients on IPv6 %1 port %2 using protocol version %3")
+							.arg(addr.toString())
+							.arg(_v6wsserver.serverPort())
+							.arg(Quassel::buildInfo().protocolVersion)
+							);
+					}
+					else {
+						//warning?
+					} */
                     break;
                 case QAbstractSocket::IPv4Protocol:
                     if (_server.listen(addr, port)) {
@@ -506,6 +532,17 @@ bool Core::startListening()
                                 .arg(port)
                                 .arg(_server.errorString()));
                     }
+					/* if (_wsserver.listen(addr, wsport)) {
+						quInfo() << qPrintable(
+							tr("Listening for WebSocket clients on IPv4 %1 port %2 using protocol version %3")
+							.arg(addr.toString())
+							.arg(_wsserver.serverPort())
+							.arg(Quassel::buildInfo().protocolVersion)
+							);
+					}
+					else {
+						//warning?
+					}*/
                     break;
                 default:
                     qCritical() << qPrintable(
@@ -516,18 +553,6 @@ bool Core::startListening()
                 }
             }
         }
-		if (Quassel::isOptionSet("enable-websocket")) {
-			QHostAddress addr;
-			uint port = Quassel::optionValue("websocket-port").toUInt();
-			if (addr.setAddress("127.0.0.1") && _wsserver.listen(addr, port)) {
-				quInfo() << qPrintable(
-					tr("Listening for Websocket clients on %1 websocket port %2 using protocol version %3")
-						.arg(addr.toString())
-						.arg(_wsserver.serverPort())
-						.arg(Quassel::buildInfo().protocolVersion)
-						);
-			}
-		}
     }
     if (!success)
         quError() << qPrintable(tr("Could not open any network interfaces to listen on!"));
