@@ -1,3 +1,5 @@
+<RCC>
+  <qresource prefix="/icons/extra">
     <file alias="oxygen/16x16/status/active-quassel-tray.png">hicolor/16x16/apps/quassel.png</file>
     <file alias="oxygen/22x22/status/active-quassel-tray.png">hicolor/22x22/apps/quassel.png</file>
     <file alias="oxygen/32x32/status/active-quassel-tray.png">hicolor/32x32/apps/quassel.png</file>
@@ -40,3 +42,5 @@
     <file alias="oxygen/48x48/actions/disconnect-quassel.png">hicolor/48x48/actions/disconnect-quassel.png</file>
     <file alias="oxygen/64x64/actions/disconnect-quassel.png">hicolor/64x64/actions/disconnect-quassel.png</file>
     <file alias="oxygen/128x128/actions/disconnect-quassel.png">hicolor/128x128/actions/disconnect-quassel.png</file>
+  </qresource>
+</RCC>

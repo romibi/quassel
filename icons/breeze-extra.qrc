@@ -1,3 +1,5 @@
+<RCC>
+  <qresource prefix="/icons/extra">
     <file alias="breeze/actions/24/connect-quassel.svg">extra-icons/breeze/actions/24/connect-quassel.svg</file>
     <file alias="breeze/actions/32/connect-quassel.svg">extra-icons/breeze/actions/32/connect-quassel.svg</file>
     <file alias="breeze/actions/24/disconnect-quassel.svg">extra-icons/breeze/actions/24/disconnect-quassel.svg</file>
@@ -21,3 +23,5 @@
     <file alias="breeze/status/64/message-quassel-tray.svg">extra-icons/breeze/status/64/message-quassel-tray.svg</file>
     <file alias="breeze/status/24/message-quassel-tray-inverted.svg">extra-icons/breeze/status/24/message-quassel-tray-inverted.svg</file>
     <file alias="breeze/status/64/message-quassel-tray-inverted.svg">extra-icons/breeze/status/64/message-quassel-tray-inverted.svg</file>
+  </qresource>
+</RCC>

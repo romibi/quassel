@@ -27,6 +27,7 @@
 #include "actioncollection.h"
 #include "client.h"
 #include "qtui.h"
+#include "extraicon.h"
 
 #ifdef HAVE_KDE4
 #  include <KMenu>
@@ -44,14 +45,14 @@ SystemTray::SystemTray(QWidget *parent)
 {
     UiStyleSettings s;
     if (s.value("IconThemeTrayInvert").toBool()) {
-        _passiveIcon = QIcon::fromTheme("inactive-quassel-tray-inverted", QIcon(":/icons/inactive-quassel-tray-inverted.png"));
-        _activeIcon = QIcon::fromTheme("active-quassel-tray-inverted", QIcon(":/icons/active-quassel-tray-inverted.png"));
-        _needsAttentionIcon = QIcon::fromTheme("message-quassel-tray-inverted", QIcon(":/icons/message-quassel-tray-inverted.png"));
+        _passiveIcon = ExtraIcon::load("inactive-quassel-tray-inverted");
+        _activeIcon = ExtraIcon::load("active-quassel-tray-inverted");
+        _needsAttentionIcon = ExtraIcon::load("message-quassel-tray-inverted");
     }
     else {
-        _passiveIcon = QIcon::fromTheme("inactive-quassel-tray", QIcon(":/icons/inactive-quassel-tray.png"));
-        _activeIcon = QIcon::fromTheme("active-quassel-tray", QIcon(":/icons/active-quassel-tray.png"));
-        _needsAttentionIcon = QIcon::fromTheme("message-quassel-tray", QIcon(":/icons/message-quassel-tray.png"));
+        _passiveIcon = ExtraIcon::load("inactive-quassel-tray");
+        _activeIcon = ExtraIcon::load("active-quassel-tray");
+        _needsAttentionIcon = ExtraIcon::load("message-quassel-tray");
     }
     Q_ASSERT(parent);
 }
