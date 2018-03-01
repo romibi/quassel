@@ -18,12 +18,11 @@
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 ***************************************************************************/
 #include "extraicon.h"
+#include "quassel.h"
 #include <QIcon>
 #include <QDirIterator>
-#include <qDebug>
 
 QIcon ExtraIcon::load(const QString name) {
-    qDebug() << "loading extra icon ...";
     QString theme = QIcon::themeName();
     if (theme == "breeze-dark") {
         theme = "breezedark";
@@ -35,14 +34,27 @@ QIcon ExtraIcon::load(const QString name) {
         theme = "breeze";
     }
 
-    QDirIterator it(":/icons/extra/"+theme, QDirIterator::Subdirectories);
+    QStringList iconSearchPaths;
 
-    QList<QString> icons;
+#ifdef EMBED_DATA
+    iconSearchPaths.push_back(":/icons/extra/");
+#else
+    // add data dir paths only here?
+#endif
+    for (auto& dataPath : Quassel::dataDirPaths()) {
+        iconSearchPaths.push_back(dataPath + "icons/extra/");
+    }
 
-    while (it.hasNext()) {
-        QString icon = it.next();
-        if (icon.contains("/"+name+".")) {
-            icons.push_back(icon);
+    QStringList icons;
+
+    for (auto& iconSearchPath : iconSearchPaths) {
+        QDirIterator it(iconSearchPath + theme, QDirIterator::Subdirectories);
+
+        while (it.hasNext()) {
+            QString icon = it.next();
+            if (icon.contains("/" + name + ".")) {
+                icons.push_back(icon);
+            }
         }
     }
 
@@ -50,12 +62,12 @@ QIcon ExtraIcon::load(const QString name) {
         return QIcon(":/icons/" + name + ".png");
     }
 
-    QList<QString>::Iterator filtered_it = icons.begin();
-    QIcon qicon = QIcon(*filtered_it);
-    filtered_it++;
-    while (filtered_it!=icons.end()) {
-        qicon.addFile(*filtered_it);
-        filtered_it++;
+    QList<QString>::Iterator iconsIt = icons.begin();
+    QIcon qicon = QIcon(*iconsIt);
+    iconsIt++;
+    while (iconsIt!=icons.end()) {
+        qicon.addFile(*iconsIt);
+        iconsIt++;
     }
 
     return qicon;
