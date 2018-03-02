@@ -24,4 +24,9 @@
 class ExtraIcon {
 public:
     static QIcon load(const QString);
+
+private:
+    static QStringList iconSearchPaths();
+    static QStringList getIconList(const QStringList, const QString, const QString);
+    static QString getNextFallbackName(const QString);
 };

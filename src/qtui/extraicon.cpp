@@ -22,7 +22,8 @@
 #include <QIcon>
 #include <QDirIterator>
 
-QIcon ExtraIcon::load(const QString name) {
+QIcon ExtraIcon::load(const QString _name) {
+    QString name = _name;
     QString theme = QIcon::themeName();
     if (theme == "breeze-dark") {
         theme = "breezedark";
@@ -34,6 +35,30 @@ QIcon ExtraIcon::load(const QString name) {
         theme = "breeze";
     }
 
+    QStringList iconSearchPaths = ExtraIcon::iconSearchPaths();
+
+    QStringList icons = ExtraIcon::getIconList(iconSearchPaths, theme, name);
+
+    while(icons.length() == 0 && name != ""){
+        name = ExtraIcon::getNextFallbackName(name);
+        if (name == "") {
+            return QIcon(":/icons/" + _name + ".png");
+        }
+        icons = ExtraIcon::getIconList(iconSearchPaths, theme, name);
+    }
+
+    QList<QString>::Iterator iconsIt = icons.begin();
+    QIcon qicon = QIcon(*iconsIt);
+    iconsIt++;
+    while (iconsIt!=icons.end()) {
+        qicon.addFile(*iconsIt);
+        iconsIt++;
+    }
+
+    return qicon;
+}
+
+QStringList ExtraIcon::iconSearchPaths() {
     QStringList iconSearchPaths;
 
 #ifdef EMBED_DATA
@@ -44,7 +69,10 @@ QIcon ExtraIcon::load(const QString name) {
     for (auto& dataPath : Quassel::dataDirPaths()) {
         iconSearchPaths.push_back(dataPath + "icons/extra/");
     }
+    return iconSearchPaths;
+}
 
+QStringList ExtraIcon::getIconList(QStringList iconSearchPaths, QString theme, QString name) {
     QStringList icons;
 
     for (auto& iconSearchPath : iconSearchPaths) {
@@ -57,18 +85,13 @@ QIcon ExtraIcon::load(const QString name) {
             }
         }
     }
+    return icons;
+}
 
-    if (icons.length() == 0) {
-        return QIcon(":/icons/" + name + ".png");
+QString ExtraIcon::getNextFallbackName(QString name) {
+    int index = name.lastIndexOf("-");
+    if (index == -1) {
+        return "";
     }
-
-    QList<QString>::Iterator iconsIt = icons.begin();
-    QIcon qicon = QIcon(*iconsIt);
-    iconsIt++;
-    while (iconsIt!=icons.end()) {
-        qicon.addFile(*iconsIt);
-        iconsIt++;
-    }
-
-    return qicon;
+    return name.left(index);
 }
