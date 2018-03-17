@@ -26,37 +26,27 @@
 
 class QCheckBox;
 
-class SystrayNotificationBackend : public AbstractNotificationBackend
+class SystrayAnimationNotificationBackend : public AbstractNotificationBackend
 {
     Q_OBJECT
 
 public:
-    SystrayNotificationBackend(QObject *parent = 0);
+    SystrayAnimationNotificationBackend(QObject *parent = 0);
 
     void notify(const Notification &);
     void close(uint notificationId);
     virtual SettingsPage *createConfigWidget() const;
 
-protected:
-    virtual bool eventFilter(QObject *obj, QEvent *event);
-
 private slots:
-    void notificationActivated(uint notificationId);
-    void notificationActivated(SystemTray::ActivationReason);
-
-    void showBubbleChanged(const QVariant &);
-    void updateToolTip();
+    void animateChanged(const QVariant &);
 
 private:
     class ConfigWidget;
-
-    bool _showBubble;
-    QList<Notification> _notifications;
-    bool _blockActivation;
+    bool _animate;
 };
 
 
-class SystrayNotificationBackend::ConfigWidget : public SettingsPage
+class SystrayAnimationNotificationBackend::ConfigWidget : public SettingsPage
 {
     Q_OBJECT
 
@@ -71,6 +61,6 @@ private slots:
     void widgetChanged();
 
 private:
-    QCheckBox *_showBubbleBox;
-    bool _showBubble;
+    QCheckBox *_animateBox;
+    bool _animate;
 };
