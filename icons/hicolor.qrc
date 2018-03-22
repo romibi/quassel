@@ -16,70 +16,135 @@
     <file alias="quassel-32.png">hicolor/32x32/apps/quassel.png</file>
     <file alias="quassel-64.png">hicolor/64x64/apps/quassel.png</file>
     <file alias="quassel-128.png">hicolor/128x128/apps/quassel.png</file>
+    <file>hicolor/24x24/actions/dialog-close-dark.svg</file>
     <file>hicolor/24x24/actions/dialog-close.svg</file>
+    <file>hicolor/24x24/actions/document-encrypt-dark.svg</file>
     <file>hicolor/24x24/actions/document-encrypt.svg</file>
+    <file>hicolor/24x24/actions/download-dark.svg</file>
     <file>hicolor/24x24/actions/download.svg</file>
+    <file>hicolor/24x24/actions/edit-clear-locationbar-rtl-dark.svg</file>
     <file>hicolor/24x24/actions/edit-clear-locationbar-rtl.svg</file>
+    <file>hicolor/24x24/actions/edit-copy-dark.svg</file>
     <file>hicolor/24x24/actions/edit-copy.svg</file>
+    <file>hicolor/24x24/actions/edit-find-dark.svg</file>
     <file>hicolor/24x24/actions/edit-find.svg</file>
+    <file>hicolor/24x24/actions/edit-rename-dark.svg</file>
     <file>hicolor/24x24/actions/edit-rename.svg</file>
+    <file>hicolor/24x24/actions/flag-blue-dark.svg</file>
     <file>hicolor/24x24/actions/flag-blue.svg</file>
+    <file>hicolor/24x24/actions/format-fill-color-dark.svg</file>
     <file>hicolor/24x24/actions/format-fill-color.svg</file>
+    <file>hicolor/24x24/actions/format-list-unordered-dark.svg</file>
     <file>hicolor/24x24/actions/format-list-unordered.svg</file>
+    <file>hicolor/24x24/actions/format-text-bold-dark.svg</file>
     <file>hicolor/24x24/actions/format-text-bold.svg</file>
+    <file>hicolor/24x24/actions/format-text-color-dark.svg</file>
     <file>hicolor/24x24/actions/format-text-color.svg</file>
+    <file>hicolor/24x24/actions/format-text-italic-dark.svg</file>
     <file>hicolor/24x24/actions/format-text-italic.svg</file>
+    <file>hicolor/24x24/actions/format-text-underline-dark.svg</file>
     <file>hicolor/24x24/actions/format-text-underline.svg</file>
+    <file>hicolor/24x24/actions/go-next-view-dark.svg</file>
     <file>hicolor/24x24/actions/go-next-view.svg</file>
+    <file>hicolor/24x24/actions/go-previous-view-dark.svg</file>
     <file>hicolor/24x24/actions/go-previous-view.svg</file>
+    <file>hicolor/24x24/actions/im-ban-kick-user-dark.svg</file>
     <file>hicolor/24x24/actions/im-ban-kick-user.svg</file>
+    <file>hicolor/24x24/actions/im-ban-user-dark.svg</file>
     <file>hicolor/24x24/actions/im-ban-user.svg</file>
+    <file>hicolor/24x24/actions/im-kick-user-dark.svg</file>
     <file>hicolor/24x24/actions/im-kick-user.svg</file>
+    <file>hicolor/24x24/actions/im-user-away-dark.svg</file>
     <file>hicolor/24x24/actions/im-user-away.svg</file>
+    <file>hicolor/24x24/actions/im-user-dark.svg</file>
+    <file>hicolor/24x24/actions/im-user-offline-dark.svg</file>
     <file>hicolor/24x24/actions/im-user-offline.svg</file>
     <file>hicolor/24x24/actions/im-user.svg</file>
+    <file>hicolor/24x24/actions/irc-close-channel-dark.svg</file>
     <file>hicolor/24x24/actions/irc-close-channel.svg</file>
+    <file>hicolor/24x24/actions/irc-join-channel-dark.svg</file>
     <file>hicolor/24x24/actions/irc-join-channel.svg</file>
+    <file>hicolor/24x24/actions/irc-operator-dark.svg</file>
     <file>hicolor/24x24/actions/irc-operator.svg</file>
+    <file>hicolor/24x24/actions/irc-remove-operator-dark.svg</file>
     <file>hicolor/24x24/actions/irc-remove-operator.svg</file>
+    <file>hicolor/24x24/actions/irc-unvoice-dark.svg</file>
     <file>hicolor/24x24/actions/irc-unvoice.svg</file>
+    <file>hicolor/24x24/actions/irc-voice-dark.svg</file>
     <file>hicolor/24x24/actions/irc-voice.svg</file>
+    <file>hicolor/24x24/actions/list-add-dark.svg</file>
+    <file>hicolor/24x24/actions/list-add-user-dark.svg</file>
     <file>hicolor/24x24/actions/list-add-user.svg</file>
     <file>hicolor/24x24/actions/list-add.svg</file>
+    <file>hicolor/24x24/actions/list-remove-user-dark.svg</file>
     <file>hicolor/24x24/actions/list-remove-user.svg</file>
+    <file>hicolor/24x24/actions/network-connect-dark.svg</file>
     <file>hicolor/24x24/actions/network-connect.svg</file>
+    <file>hicolor/24x24/actions/network-disconnect-dark.svg</file>
     <file>hicolor/24x24/actions/network-disconnect.svg</file>
+    <file>hicolor/24x24/actions/show-menu-dark.svg</file>
     <file>hicolor/24x24/actions/show-menu.svg</file>
+    <file>hicolor/24x24/actions/tools-report-bug-dark.svg</file>
     <file>hicolor/24x24/actions/tools-report-bug.svg</file>
+    <file>hicolor/24x24/actions/view-fullscreen-dark.svg</file>
     <file>hicolor/24x24/actions/view-fullscreen.svg</file>
+    <file>hicolor/32x32/actions/application-exit-dark.svg</file>
     <file>hicolor/32x32/actions/application-exit.svg</file>
+    <file>hicolor/32x32/actions/configure-dark.svg</file>
+    <file>hicolor/32x32/actions/configure-shortcuts-dark.svg</file>
     <file>hicolor/32x32/actions/configure-shortcuts.svg</file>
     <file>hicolor/32x32/actions/configure.svg</file>
+    <file>hicolor/32x32/actions/dialog-cancel-dark.svg</file>
     <file>hicolor/32x32/actions/dialog-cancel.svg</file>
+    <file>hicolor/32x32/actions/document-edit-dark.svg</file>
     <file>hicolor/32x32/actions/document-edit.svg</file>
+    <file>hicolor/32x32/actions/document-open-dark.svg</file>
     <file>hicolor/32x32/actions/document-open.svg</file>
+    <file>hicolor/32x32/actions/edit-delete-dark.svg</file>
     <file>hicolor/32x32/actions/edit-delete.svg</file>
+    <file>hicolor/32x32/actions/go-down-dark.svg</file>
     <file>hicolor/32x32/actions/go-down.svg</file>
+    <file>hicolor/32x32/actions/go-next-dark.svg</file>
     <file>hicolor/32x32/actions/go-next.svg</file>
+    <file>hicolor/32x32/actions/go-previous-dark.svg</file>
     <file>hicolor/32x32/actions/go-previous.svg</file>
+    <file>hicolor/32x32/actions/go-up-dark.svg</file>
     <file>hicolor/32x32/actions/go-up.svg</file>
+    <file>hicolor/32x32/actions/help-about-dark.svg</file>
     <file>hicolor/32x32/actions/help-about.svg</file>
+    <file>hicolor/32x32/actions/mail-message-new-dark.svg</file>
     <file>hicolor/32x32/actions/mail-message-new.svg</file>
+    <file>hicolor/32x32/actions/media-playback-start-dark.svg</file>
     <file>hicolor/32x32/actions/media-playback-start.svg</file>
+    <file>hicolor/32x32/actions/view-refresh-dark.svg</file>
     <file>hicolor/32x32/actions/view-refresh.svg</file>
+    <file>hicolor/32x32/actions/zoom-in-dark.svg</file>
     <file>hicolor/32x32/actions/zoom-in.svg</file>
+    <file>hicolor/32x32/actions/zoom-original-dark.svg</file>
     <file>hicolor/32x32/actions/zoom-original.svg</file>
+    <file>hicolor/32x32/actions/zoom-out-dark.svg</file>
     <file>hicolor/32x32/actions/zoom-out.svg</file>
+    <file>hicolor/22x22/devices/network-wired-dark.svg</file>
     <file>hicolor/22x22/devices/network-wired.svg</file>
+    <file>hicolor/32x32/preferences/help-about-dark.svg</file>
     <file>hicolor/32x32/preferences/help-about.svg</file>
+    <file>hicolor/22x22/status/irc-channel-joined-dark.svg</file>
     <file>hicolor/22x22/status/irc-channel-joined.svg</file>
+    <file>hicolor/22x22/status/irc-channel-parted-dark.svg</file>
     <file>hicolor/22x22/status/irc-channel-parted.svg</file>
+    <file>hicolor/22x22/status/network-wired-dark.svg</file>
     <file>hicolor/22x22/status/network-wired.svg</file>
+    <file>hicolor/22x22/status/user-away-dark.svg</file>
     <file>hicolor/22x22/status/user-away.svg</file>
+    <file>hicolor/64x64/status/dialog-information-dark.svg</file>
     <file>hicolor/64x64/status/dialog-information.svg</file>
+    <file>hicolor/64x64/status/dialog-password-dark.svg</file>
     <file>hicolor/64x64/status/dialog-password.svg</file>
+    <file>hicolor/64x64/status/dialog-warning-dark.svg</file>
     <file>hicolor/64x64/status/dialog-warning.svg</file>
+    <file>hicolor/64x64/status/security-high-dark.svg</file>
     <file>hicolor/64x64/status/security-high.svg</file>
+    <file>hicolor/64x64/status/security-low-dark.svg</file>
     <file>hicolor/64x64/status/security-low.svg</file>
   </qresource>
 </RCC>
