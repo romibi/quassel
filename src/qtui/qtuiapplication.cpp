@@ -160,7 +160,11 @@ bool QtUiApplication::init()
         if (savedIcontheme == "breezedark")
             QtUiSettings().remove("IconTheme");
 #endif
-
+#ifndef EMBED_DATA
+        QStringList themesearchpaths = QIcon::themeSearchPaths();
+        themesearchpaths.append("/usr/local/share/quassel/icons");
+        QIcon::setThemeSearchPaths(themesearchpaths);
+#endif
         // Set the icon theme
         if (Quassel::isOptionSet("icontheme"))
             QIcon::setThemeName(Quassel::optionValue("icontheme"));

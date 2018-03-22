@@ -32,7 +32,11 @@ QIcon ExtraIcon::load(const QString _name) {
         if (QIcon::hasThemeIcon(name)) {
             return QIcon::fromTheme(name);
         }
-        theme = "breeze";
+        if(QIcon::themeName().contains("dark")) {
+            theme = "breezedark";
+        } else {
+            theme = "breeze";
+        }
     }
 
     QStringList iconSearchPaths = ExtraIcon::iconSearchPaths();
