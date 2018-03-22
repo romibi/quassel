@@ -37,6 +37,7 @@
 #include "settingspagedlg.h"
 #include "settingspages/chatmonitorsettingspage.h"
 #include "clientignorelistmanager.h"
+#include "quasselqicon.h"
 
 ChatMonitorView::ChatMonitorView(ChatMonitorFilter *filter, QWidget *parent)
     : ChatView(filter, parent),
@@ -73,7 +74,7 @@ void ChatMonitorView::addActionsToMenu(QMenu *menu, const QPointF &pos)
     }
 
     menu->addSeparator();
-    menu->addAction(QIcon::fromTheme("configure"), tr("Configure..."), this, SLOT(showSettingsPage()));
+    menu->addAction(QuasselQIcon::fromTheme("configure"), tr("Configure..."), this, SLOT(showSettingsPage()));
 }
 
 

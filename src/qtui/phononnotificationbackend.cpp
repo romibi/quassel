@@ -30,6 +30,7 @@
 #include "clientsettings.h"
 #include "mainwin.h"
 #include "qtui.h"
+#include "quasselqicon.h"
 
 PhononNotificationBackend::PhononNotificationBackend(QObject *parent)
     : AbstractNotificationBackend(parent),
@@ -112,9 +113,9 @@ PhononNotificationBackend::ConfigWidget::ConfigWidget(QWidget *parent)
 {
     ui.setupUi(this);
     _audioAvailable = !Phonon::BackendCapabilities::availableAudioOutputDevices().isEmpty();
-    ui.enabled->setIcon(QIcon::fromTheme("media-playback-start"));
-    ui.play->setIcon(QIcon::fromTheme("media-playback-start"));
-    ui.open->setIcon(QIcon::fromTheme("document-open"));
+    ui.enabled->setIcon(QuasselQIcon::fromTheme("media-playback-start"));
+    ui.play->setIcon(QuasselQIcon::fromTheme("media-playback-start"));
+    ui.open->setIcon(QuasselQIcon::fromTheme("document-open"));
 
     connect(ui.enabled, SIGNAL(toggled(bool)), SLOT(widgetChanged()));
     connect(ui.filename, SIGNAL(textChanged(const QString &)), SLOT(widgetChanged()));

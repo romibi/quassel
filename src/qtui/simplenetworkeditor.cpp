@@ -23,17 +23,18 @@
 #include <QIcon>
 
 #include "networkssettingspage.h"
+#include "quasselqicon.h"
 
 SimpleNetworkEditor::SimpleNetworkEditor(QWidget *parent)
     : QWidget(parent)
 {
     ui.setupUi(this);
 
-    ui.addServer->setIcon(QIcon::fromTheme("list-add"));
-    ui.deleteServer->setIcon(QIcon::fromTheme("edit-delete"));
-    ui.editServer->setIcon(QIcon::fromTheme("configure"));
-    ui.upServer->setIcon(QIcon::fromTheme("go-up"));
-    ui.downServer->setIcon(QIcon::fromTheme("go-down"));
+    ui.addServer->setIcon(QuasselQIcon::fromTheme("list-add"));
+    ui.deleteServer->setIcon(QuasselQIcon::fromTheme("edit-delete"));
+    ui.editServer->setIcon(QuasselQIcon::fromTheme("configure"));
+    ui.upServer->setIcon(QuasselQIcon::fromTheme("go-up"));
+    ui.downServer->setIcon(QuasselQIcon::fromTheme("go-down"));
 
     connect(ui.networkNameEdit, SIGNAL(textEdited(const QString &)), this, SIGNAL(widgetHasChanged()));
     connect(ui.channelList, SIGNAL(textChanged()), this, SIGNAL(widgetHasChanged()));
@@ -65,7 +66,7 @@ void SimpleNetworkEditor::displayNetworkInfo(const NetworkInfo &networkInfo)
     foreach(Network::Server server, _networkInfo.serverList) {
         QListWidgetItem *item = new QListWidgetItem(QString("%1:%2").arg(server.host).arg(server.port));
         if (server.useSsl)
-            item->setIcon(QIcon::fromTheme("document-encrypt"));
+            item->setIcon(QuasselQIcon::fromTheme("document-encrypt"));
         ui.serverList->addItem(item);
     }
 

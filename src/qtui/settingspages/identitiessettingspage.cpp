@@ -26,15 +26,16 @@
 
 #include "client.h"
 #include "signalproxy.h"
+#include "quasselqicon.h"
 
 IdentitiesSettingsPage::IdentitiesSettingsPage(QWidget *parent)
     : SettingsPage(tr("IRC"), tr("Identities"), parent),
     _editSsl(false)
 {
     ui.setupUi(this);
-    ui.renameIdentity->setIcon(QIcon::fromTheme("edit-rename"));
-    ui.addIdentity->setIcon(QIcon::fromTheme("list-add-user"));
-    ui.deleteIdentity->setIcon(QIcon::fromTheme("list-remove-user"));
+    ui.renameIdentity->setIcon(QuasselQIcon::fromTheme("edit-rename"));
+    ui.addIdentity->setIcon(QuasselQIcon::fromTheme("list-add-user"));
+    ui.deleteIdentity->setIcon(QuasselQIcon::fromTheme("list-remove-user"));
 
     coreConnectionStateChanged(Client::isConnected()); // need a core connection!
     connect(Client::instance(), SIGNAL(coreConnectionStateChanged(bool)), this, SLOT(coreConnectionStateChanged(bool)));
@@ -417,7 +418,7 @@ SaveIdentitiesDlg::SaveIdentitiesDlg(const QList<CertIdentity *> &toCreate, cons
     : QDialog(parent)
 {
     ui.setupUi(this);
-    ui.abort->setIcon(QIcon::fromTheme("dialog-cancel"));
+    ui.abort->setIcon(QuasselQIcon::fromTheme("dialog-cancel"));
 
     numevents = toCreate.count() + toUpdate.count() + toRemove.count();
     rcvevents = 0;

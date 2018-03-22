@@ -25,14 +25,15 @@
 #include "action.h"
 #include "actioncollection.h"
 #include "qtui.h"
+#include "quasselqicon.h"
 
 ChatViewSearchBar::ChatViewSearchBar(QWidget *parent)
     : QWidget(parent)
 {
     ui.setupUi(this);
-    ui.hideButton->setIcon(QIcon::fromTheme("dialog-close"));
-    ui.searchUpButton->setIcon(QIcon::fromTheme("go-up"));
-    ui.searchDownButton->setIcon(QIcon::fromTheme("go-down"));
+    ui.hideButton->setIcon(QuasselQIcon::fromTheme("dialog-close"));
+    ui.searchUpButton->setIcon(QuasselQIcon::fromTheme("go-up"));
+    ui.searchDownButton->setIcon(QuasselQIcon::fromTheme("go-down"));
     _searchDelayTimer.setSingleShot(true);
 
     layout()->setContentsMargins(0, 0, 0, 0);

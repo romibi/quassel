@@ -31,6 +31,7 @@
 #include "clientbufferviewmanager.h"
 #include "networkmodel.h"
 #include "util.h"
+#include "quasselqicon.h"
 
 BufferViewSettingsPage::BufferViewSettingsPage(QWidget *parent)
     : SettingsPage(tr("Interface"), tr("Custom Chat Lists"), parent),
@@ -43,9 +44,9 @@ BufferViewSettingsPage::BufferViewSettingsPage(QWidget *parent)
     if (!(Client::coreFeatures() & Quassel::HideInactiveNetworks))
         ui.hideInactiveNetworks->hide();
 
-    ui.renameBufferView->setIcon(QIcon::fromTheme("edit-rename"));
-    ui.addBufferView->setIcon(QIcon::fromTheme("list-add"));
-    ui.deleteBufferView->setIcon(QIcon::fromTheme("edit-delete"));
+    ui.renameBufferView->setIcon(QuasselQIcon::fromTheme("edit-rename"));
+    ui.addBufferView->setIcon(QuasselQIcon::fromTheme("list-add"));
+    ui.deleteBufferView->setIcon(QuasselQIcon::fromTheme("edit-delete"));
 
     reset();
 

@@ -25,6 +25,7 @@
 #include "client.h"
 #include "clientsettings.h"
 #include "coreaccountmodel.h"
+#include "quasselqicon.h"
 
 CoreAccountSettingsPage::CoreAccountSettingsPage(QWidget *parent)
     : SettingsPage(tr("Remote Cores"), QString(), parent),
@@ -34,9 +35,9 @@ CoreAccountSettingsPage::CoreAccountSettingsPage(QWidget *parent)
 {
     ui.setupUi(this);
     initAutoWidgets();
-    ui.addAccountButton->setIcon(QIcon::fromTheme("list-add"));
-    ui.editAccountButton->setIcon(QIcon::fromTheme("document-edit"));
-    ui.deleteAccountButton->setIcon(QIcon::fromTheme("edit-delete"));
+    ui.addAccountButton->setIcon(QuasselQIcon::fromTheme("list-add"));
+    ui.editAccountButton->setIcon(QuasselQIcon::fromTheme("document-edit"));
+    ui.deleteAccountButton->setIcon(QuasselQIcon::fromTheme("edit-delete"));
 
     _model = new CoreAccountModel(Client::coreAccountModel(), this);
     _filteredModel = new FilteredCoreAccountModel(_model, this);

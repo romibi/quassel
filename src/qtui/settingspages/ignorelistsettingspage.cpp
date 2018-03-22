@@ -30,14 +30,16 @@
 #include <QEvent>
 #include <QDebug>
 
+#include "quasselqicon.h"
+
 IgnoreListSettingsPage::IgnoreListSettingsPage(QWidget *parent)
     : SettingsPage(tr("IRC"), tr("Ignore List"), parent)
 {
     ui.setupUi(this);
     _delegate = new IgnoreListDelegate(ui.ignoreListView);
-    ui.newIgnoreRuleButton->setIcon(QIcon::fromTheme("list-add"));
-    ui.deleteIgnoreRuleButton->setIcon(QIcon::fromTheme("edit-delete"));
-    ui.editIgnoreRuleButton->setIcon(QIcon::fromTheme("configure"));
+    ui.newIgnoreRuleButton->setIcon(QuasselQIcon::fromTheme("list-add"));
+    ui.deleteIgnoreRuleButton->setIcon(QuasselQIcon::fromTheme("edit-delete"));
+    ui.editIgnoreRuleButton->setIcon(QuasselQIcon::fromTheme("configure"));
 
     ui.ignoreListView->setSelectionBehavior(QAbstractItemView::SelectRows);
     ui.ignoreListView->setSelectionMode(QAbstractItemView::SingleSelection);

@@ -21,9 +21,11 @@
 #include <QIcon>
 #include <QString>
 
-class ExtraIcon {
+class QuasselQIcon {
 public:
-    static QIcon load(const QString);
+    static QIcon extra(const QString);
+    static QIcon fromTheme(const QString);
+    static QIcon fromTheme(const QString, const QIcon);
 
 private:
     static QStringList iconSearchPaths();

@@ -26,6 +26,7 @@
 
 #include "clientsettings.h"
 #include "coreaccountsettingspage.h"
+#include "quasselqicon.h"
 
 CoreConnectDlg::CoreConnectDlg(QWidget *parent) : QDialog(parent)
 {
@@ -39,7 +40,7 @@ CoreConnectDlg::CoreConnectDlg(QWidget *parent) : QDialog(parent)
         _settingsPage->setSelectedAccount(lastAccount);
 
     setWindowTitle(tr("Connect to Core"));
-    setWindowIcon(QIcon::fromTheme("network-disconnect"));
+    setWindowIcon(QuasselQIcon::fromTheme("network-disconnect"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(_settingsPage);

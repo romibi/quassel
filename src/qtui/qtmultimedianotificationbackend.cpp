@@ -27,6 +27,7 @@
 #include "clientsettings.h"
 #include "mainwin.h"
 #include "qtui.h"
+#include "quasselqicon.h"
 
 QtMultimediaNotificationBackend::QtMultimediaNotificationBackend(QObject *parent)
     : AbstractNotificationBackend(parent)
@@ -96,9 +97,9 @@ QtMultimediaNotificationBackend::ConfigWidget::ConfigWidget(QWidget *parent)
     : SettingsPage("Internal", "QtMultimediaNotification", parent)
 {
     ui.setupUi(this);
-    ui.enabled->setIcon(QIcon::fromTheme("media-playback-start"));
-    ui.play->setIcon(QIcon::fromTheme("media-playback-start"));
-    ui.open->setIcon(QIcon::fromTheme("document-open"));
+    ui.enabled->setIcon(QuasselQIcon::fromTheme("media-playback-start"));
+    ui.play->setIcon(QuasselQIcon::fromTheme("media-playback-start"));
+    ui.open->setIcon(QuasselQIcon::fromTheme("document-open"));
 
     _audioAvailable = (QMediaPlayer().availability() == QMultimedia::Available);
 

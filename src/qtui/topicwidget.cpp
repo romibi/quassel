@@ -27,12 +27,13 @@
 #include "uisettings.h"
 #include "graphicalui.h"
 #include "uistyle.h"
+#include "quasselqicon.h"
 
 TopicWidget::TopicWidget(QWidget *parent)
     : AbstractItemView(parent)
 {
     ui.setupUi(this);
-    ui.topicEditButton->setIcon(QIcon::fromTheme("edit-rename"));
+    ui.topicEditButton->setIcon(QuasselQIcon::fromTheme("edit-rename"));
     ui.topicLineEdit->setLineWrapEnabled(true);
     ui.topicLineEdit->installEventFilter(this);
 

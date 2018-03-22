@@ -17,12 +17,12 @@
 *   Free Software Foundation, Inc.,                                       *
 *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
 ***************************************************************************/
-#include "extraicon.h"
+#include "quasselqicon.h"
 #include "quassel.h"
 #include <QIcon>
 #include <QDirIterator>
 
-QIcon ExtraIcon::load(const QString _name) {
+QIcon QuasselQIcon::extra(const QString _name) {
     QString name = _name;
     QString theme = QIcon::themeName();
     if (theme == "breeze-dark") {
@@ -39,16 +39,16 @@ QIcon ExtraIcon::load(const QString _name) {
         }
     }
 
-    QStringList iconSearchPaths = ExtraIcon::iconSearchPaths();
+    QStringList iconSearchPaths = QuasselQIcon::iconSearchPaths();
 
-    QStringList icons = ExtraIcon::getIconList(iconSearchPaths, theme, name);
+    QStringList icons = QuasselQIcon::getIconList(iconSearchPaths, theme, name);
 
     while(icons.length() == 0 && name != ""){
-        name = ExtraIcon::getNextFallbackName(name);
+        name = QuasselQIcon::getNextFallbackName(name);
         if (name == "") {
             return QIcon(":/icons/" + _name + ".svg");
         }
-        icons = ExtraIcon::getIconList(iconSearchPaths, theme, name);
+        icons = QuasselQIcon::getIconList(iconSearchPaths, theme, name);
     }
 
     QList<QString>::Iterator iconsIt = icons.begin();
@@ -62,7 +62,7 @@ QIcon ExtraIcon::load(const QString _name) {
     return qicon;
 }
 
-QStringList ExtraIcon::iconSearchPaths() {
+QStringList QuasselQIcon::iconSearchPaths() {
     QStringList iconSearchPaths;
 
 #ifdef EMBED_DATA
@@ -76,7 +76,7 @@ QStringList ExtraIcon::iconSearchPaths() {
     return iconSearchPaths;
 }
 
-QStringList ExtraIcon::getIconList(QStringList iconSearchPaths, QString theme, QString name) {
+QStringList QuasselQIcon::getIconList(QStringList iconSearchPaths, QString theme, QString name) {
     QStringList icons;
 
     for (auto& iconSearchPath : iconSearchPaths) {
@@ -92,10 +92,24 @@ QStringList ExtraIcon::getIconList(QStringList iconSearchPaths, QString theme, Q
     return icons;
 }
 
-QString ExtraIcon::getNextFallbackName(QString name) {
+QString QuasselQIcon::getNextFallbackName(QString name) {
     int index = name.lastIndexOf("-");
     if (index == -1) {
         return "";
     }
     return name.left(index);
+}
+
+QIcon QuasselQIcon::fromTheme(QString name) {
+    if(QIcon::themeName().contains("dark"))
+        return QIcon::fromTheme(name+"-dark");
+    else
+        return QIcon::fromTheme(name);
+}
+
+QIcon QuasselQIcon::fromTheme(QString name, QIcon icon) {
+    if(QIcon::themeName().contains("dark"))
+        return QIcon::fromTheme(name+"-dark", icon);
+    else
+        return QIcon::fromTheme(name, icon);
 }

@@ -27,7 +27,6 @@ set(SOURCES
     debugconsole.cpp
     debuglogwidget.cpp
     debugmessagemodelfilter.cpp
-    extraicon.cpp
     inputwidget.cpp
     ircconnectionwizard.cpp
     legacysystemtray.cpp

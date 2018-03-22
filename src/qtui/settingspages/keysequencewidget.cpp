@@ -41,6 +41,7 @@
 #include "action.h"
 #include "actioncollection.h"
 #include "keysequencewidget.h"
+#include "quasselqicon.h"
 
 KeySequenceButton::KeySequenceButton(KeySequenceWidget *d_, QWidget *parent)
     : QPushButton(parent),
@@ -172,7 +173,7 @@ KeySequenceWidget::KeySequenceWidget(QWidget *parent)
 
     _keyButton = new KeySequenceButton(this, this);
     _keyButton->setFocusPolicy(Qt::StrongFocus);
-    _keyButton->setIcon(QIcon::fromTheme("configure"));
+    _keyButton->setIcon(QuasselQIcon::fromTheme("configure"));
     _keyButton->setToolTip(tr("Click on the button, then enter the shortcut like you would in the program.\nExample for Ctrl+a: hold the Ctrl key and press a."));
     layout->addWidget(_keyButton);
 
@@ -180,9 +181,9 @@ KeySequenceWidget::KeySequenceWidget(QWidget *parent)
     layout->addWidget(_clearButton);
 
     if (qApp->isLeftToRight())
-        _clearButton->setIcon(QIcon::fromTheme("edit-clear-locationbar-rtl", QIcon::fromTheme("edit-clear")));
+        _clearButton->setIcon(QuasselQIcon::fromTheme("edit-clear-locationbar-rtl", QuasselQIcon::fromTheme("edit-clear")));
     else
-        _clearButton->setIcon(QIcon::fromTheme("edit-clear-locationbar-ltr", QIcon::fromTheme("edit-clear")));
+        _clearButton->setIcon(QuasselQIcon::fromTheme("edit-clear-locationbar-ltr", QuasselQIcon::fromTheme("edit-clear")));
 
     setLayout(layout);
 

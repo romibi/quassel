@@ -27,6 +27,7 @@
 #include "mainpage.h"
 #include "coreconnectdlg.h"
 #include "client.h"
+#include "quasselqicon.h"
 
 MainPage::MainPage(QWidget *parent) : QWidget(parent)
 {
@@ -37,7 +38,7 @@ MainPage::MainPage(QWidget *parent) : QWidget(parent)
     layout->addWidget(label);
 
     if (Quassel::runMode() != Quassel::Monolithic) {
-        _connectButton = new QPushButton(QIcon::fromTheme("network-connect"), tr("Connect to Core..."));
+        _connectButton = new QPushButton(QuasselQIcon::fromTheme("network-connect"), tr("Connect to Core..."));
         _connectButton->setEnabled(Client::coreConnection()->state() == CoreConnection::Disconnected);
 
         connect(Client::coreConnection(), SIGNAL(stateChanged(CoreConnection::ConnectionState)), this, SLOT(coreConnectionStateChanged()));

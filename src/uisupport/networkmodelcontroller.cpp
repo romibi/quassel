@@ -37,6 +37,7 @@
 #include "util.h"
 #include "clientignorelistmanager.h"
 #include "client.h"
+#include "quasselqicon.h"
 
 NetworkModelController::NetworkModelController(QObject *parent)
     : QObject(parent),
@@ -545,7 +546,7 @@ void NetworkModelController::handleNickAction(ActionType type, QAction *action)
 
 NetworkModelController::JoinDlg::JoinDlg(const QModelIndex &index, QWidget *parent) : QDialog(parent)
 {
-    setWindowIcon(QIcon::fromTheme("irc-join-channel"));
+    setWindowIcon(QuasselQIcon::fromTheme("irc-join-channel"));
     setWindowTitle(tr("Join Channel"));
 
     QGridLayout *layout = new QGridLayout(this);

@@ -32,6 +32,7 @@
 #include "networkmodel.h"
 #include "qtui.h"
 #include "systemtray.h"
+#include "quasselqicon.h"
 
 SystrayNotificationBackend::SystrayNotificationBackend(QObject *parent)
     : AbstractNotificationBackend(parent),
@@ -157,7 +158,7 @@ SettingsPage *SystrayNotificationBackend::createConfigWidget() const
 SystrayNotificationBackend::ConfigWidget::ConfigWidget(QWidget *parent) : SettingsPage("Internal", "SystrayNotification", parent)
 {
     _showBubbleBox = new QCheckBox(tr("Show a message in a popup"));
-    _showBubbleBox->setIcon(QIcon::fromTheme("dialog-information"));
+    _showBubbleBox->setIcon(QuasselQIcon::fromTheme("dialog-information"));
     connect(_showBubbleBox, SIGNAL(toggled(bool)), this, SLOT(widgetChanged()));
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(_showBubbleBox);

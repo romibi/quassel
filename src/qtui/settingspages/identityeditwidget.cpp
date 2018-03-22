@@ -35,17 +35,18 @@
 #endif
 
 #include "client.h"
+#include "quasselqicon.h"
 
 IdentityEditWidget::IdentityEditWidget(QWidget *parent)
     : QWidget(parent)
 {
     ui.setupUi(this);
 
-    ui.addNick->setIcon(QIcon::fromTheme("list-add"));
-    ui.deleteNick->setIcon(QIcon::fromTheme("edit-delete"));
-    ui.renameNick->setIcon(QIcon::fromTheme("edit-rename"));
-    ui.nickUp->setIcon(QIcon::fromTheme("go-up"));
-    ui.nickDown->setIcon(QIcon::fromTheme("go-down"));
+    ui.addNick->setIcon(QuasselQIcon::fromTheme("list-add"));
+    ui.deleteNick->setIcon(QuasselQIcon::fromTheme("edit-delete"));
+    ui.renameNick->setIcon(QuasselQIcon::fromTheme("edit-rename"));
+    ui.nickUp->setIcon(QuasselQIcon::fromTheme("go-up"));
+    ui.nickDown->setIcon(QuasselQIcon::fromTheme("go-down"));
 
     // We need to know whenever the state of input widgets changes...
     connect(ui.realName, SIGNAL(textEdited(const QString &)), this, SIGNAL(widgetHasChanged()));

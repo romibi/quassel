@@ -32,6 +32,7 @@
 #include "qtuisettings.h"
 #include "tabcompleter.h"
 #include <QPainter>
+#include "quasselqicon.h"
 
 const int leftMargin = 3;
 
@@ -61,11 +62,11 @@ InputWidget::InputWidget(QWidget *parent)
     ui.inputEdit->setMode(MultiLineEdit::MultiLine);
     ui.inputEdit->setPasteProtectionEnabled(true);
 
-    ui.boldButton->setIcon(QIcon::fromTheme("format-text-bold"));
-    ui.italicButton->setIcon(QIcon::fromTheme("format-text-italic"));
-    ui.underlineButton->setIcon(QIcon::fromTheme("format-text-underline"));
-    ui.textcolorButton->setIcon(QIcon::fromTheme("format-text-color"));
-    ui.highlightcolorButton->setIcon(QIcon::fromTheme("format-fill-color"));
+    ui.boldButton->setIcon(QuasselQIcon::fromTheme("format-text-bold"));
+    ui.italicButton->setIcon(QuasselQIcon::fromTheme("format-text-italic"));
+    ui.underlineButton->setIcon(QuasselQIcon::fromTheme("format-text-underline"));
+    ui.textcolorButton->setIcon(QuasselQIcon::fromTheme("format-text-color"));
+    ui.highlightcolorButton->setIcon(QuasselQIcon::fromTheme("format-fill-color"));
     ui.encryptionIconLabel->hide();
 
     _colorMenu = new QMenu();
@@ -471,7 +472,7 @@ void InputWidget::updateNickSelector() const
     ui.ownNick->addItems(nicks);
 
     if (me && me->isAway())
-        ui.ownNick->setItemData(nickIdx, QIcon::fromTheme("user-away"), Qt::DecorationRole);
+        ui.ownNick->setItemData(nickIdx, QuasselQIcon::fromTheme("user-away"), Qt::DecorationRole);
 
     ui.ownNick->setCurrentIndex(nickIdx);
 }
@@ -584,7 +585,7 @@ void InputWidget::colorChosen(QAction *action)
         mergeFormatOnSelection(fmt);
     }
     ui.textcolorButton->setDefaultAction(action);
-    ui.textcolorButton->setIcon(createColorToolButtonIcon(QIcon::fromTheme("format-text-color"), color));
+    ui.textcolorButton->setIcon(createColorToolButtonIcon(QuasselQIcon::fromTheme("format-text-color"), color));
 }
 
 
@@ -604,7 +605,7 @@ void InputWidget::colorHighlightChosen(QAction *action)
         mergeFormatOnSelection(fmt);
     }
     ui.highlightcolorButton->setDefaultAction(action);
-    ui.highlightcolorButton->setIcon(createColorToolButtonIcon(QIcon::fromTheme("format-fill-color"), color));
+    ui.highlightcolorButton->setIcon(createColorToolButtonIcon(QuasselQIcon::fromTheme("format-fill-color"), color));
 }
 
 

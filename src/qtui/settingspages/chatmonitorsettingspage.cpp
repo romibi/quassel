@@ -29,6 +29,7 @@
 #include "bufferview.h"
 #include "bufferviewfilter.h"
 #include "chatviewsettings.h"
+#include "quasselqicon.h"
 
 #include <QVariant>
 
@@ -37,8 +38,8 @@ ChatMonitorSettingsPage::ChatMonitorSettingsPage(QWidget *parent)
 {
     ui.setupUi(this);
 
-    ui.activateBuffer->setIcon(QIcon::fromTheme("go-next"));
-    ui.deactivateBuffer->setIcon(QIcon::fromTheme("go-previous"));
+    ui.activateBuffer->setIcon(QuasselQIcon::fromTheme("go-next"));
+    ui.deactivateBuffer->setIcon(QuasselQIcon::fromTheme("go-previous"));
 
     // setup available buffers config (for the bufferview on the left)
     _configAvailable = new BufferViewConfig(-667, this);

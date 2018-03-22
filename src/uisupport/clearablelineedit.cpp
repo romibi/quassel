@@ -23,12 +23,13 @@
 #include <QIcon>
 #include <QToolButton>
 #include <QStyle>
+#include "quasselqicon.h"
 
 ClearableLineEdit::ClearableLineEdit(QWidget *parent)
     : QLineEdit(parent)
 {
     clearButton = new QToolButton(this);
-    clearButton->setIcon(QIcon::fromTheme("edit-clear-locationbar-rtl", QIcon::fromTheme("edit-clear")));
+    clearButton->setIcon(QuasselQIcon::fromTheme("edit-clear-locationbar-rtl", QuasselQIcon::fromTheme("edit-clear")));
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet("QToolButton { border: none; padding: 0px; }");
     clearButton->hide();

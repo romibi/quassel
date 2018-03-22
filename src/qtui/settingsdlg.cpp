@@ -25,6 +25,7 @@
 #include "settingsdlg.h"
 
 #include "client.h"
+#include "quasselqicon.h"
 
 SettingsDlg::SettingsDlg(QWidget *parent)
     : QDialog(parent),
@@ -33,7 +34,7 @@ SettingsDlg::SettingsDlg(QWidget *parent)
     ui.setupUi(this);
     setModal(true);
     setAttribute(Qt::WA_DeleteOnClose, true);
-    setWindowIcon(QIcon::fromTheme("configure"));
+    setWindowIcon(QuasselQIcon::fromTheme("configure"));
 
     updateGeometry();
 

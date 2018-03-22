@@ -23,6 +23,7 @@ set(SOURCES
     nickview.cpp
     nickviewfilter.cpp
     qssparser.cpp
+    quasselqicon.cpp
     resizingstackedwidget.cpp
     settingspage.cpp
     styledlabel.cpp

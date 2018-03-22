@@ -27,6 +27,7 @@
 #include "uistyle.h"
 #include "uisettings.h"
 #include "util.h"
+#include "quasselqicon.h"
 
 QHash<QString, UiStyle::FormatType> UiStyle::_formatCodes;
 bool UiStyle::_useCustomTimestampFormat;       /// If true, use the custom timestamp format
@@ -37,13 +38,13 @@ bool UiStyle::_showSenderBrackets;             /// If true, show brackets around
 
 UiStyle::UiStyle(QObject *parent)
     : QObject(parent),
-    _channelJoinedIcon(QIcon::fromTheme("irc-channel-joined")),
-    _channelPartedIcon(QIcon::fromTheme("irc-channel-parted")),
-    _userOfflineIcon(QIcon::fromTheme("im-user-offline", QIcon::fromTheme("user-offline"))),
-    _userOnlineIcon(QIcon::fromTheme("im-user", QIcon::fromTheme("user-available"))), // im-user-* are non-standard oxygen extensions
-    _userAwayIcon(QIcon::fromTheme("im-user-away", QIcon::fromTheme("user-away"))),
-    _categoryOpIcon(QIcon::fromTheme("irc-operator")),
-    _categoryVoiceIcon(QIcon::fromTheme("irc-voice")),
+    _channelJoinedIcon(QuasselQIcon::fromTheme("irc-channel-joined")),
+    _channelPartedIcon(QuasselQIcon::fromTheme("irc-channel-parted")),
+    _userOfflineIcon(QuasselQIcon::fromTheme("im-user-offline", QuasselQIcon::fromTheme("user-offline"))),
+    _userOnlineIcon(QuasselQIcon::fromTheme("im-user", QuasselQIcon::fromTheme("user-available"))), // im-user-* are non-standard oxygen extensions
+    _userAwayIcon(QuasselQIcon::fromTheme("im-user-away", QuasselQIcon::fromTheme("user-away"))),
+    _categoryOpIcon(QuasselQIcon::fromTheme("irc-operator")),
+    _categoryVoiceIcon(QuasselQIcon::fromTheme("irc-voice")),
     _opIconLimit(UserCategoryItem::categoryFromModes("o")),
     _voiceIconLimit(UserCategoryItem::categoryFromModes("v"))
 {
