@@ -1,27 +1,85 @@
 <RCC>
   <qresource prefix="/icons" >
+    <file>hicolor/32x32/apps/quassel.svg</file>
+    <file>hicolor/48x48/apps/quassel.svg</file>
+    <file>hicolor/64x64/apps/quassel.svg</file>
+    <file alias="quassel.svg">hicolor/48x48/apps/quassel.svg</file>
+    <file alias="quassel-32.svg">hicolor/32x32/apps/quassel.svg</file>
+    <file alias="quassel-64.svg">hicolor/64x64/apps/quassel.svg</file>
     <file>hicolor/16x16/apps/quassel.png</file>
     <file>hicolor/22x22/apps/quassel.png</file>
     <file>hicolor/32x32/apps/quassel.png</file>
+    <file>hicolor/48x48/apps/quassel.png</file>
+    <file>hicolor/64x64/apps/quassel.png</file>
+    <file>hicolor/128x128/apps/quassel.png</file>
     <file alias="quassel.png">hicolor/48x48/apps/quassel.png</file>
     <file alias="quassel-32.png">hicolor/32x32/apps/quassel.png</file>
     <file alias="quassel-64.png">hicolor/64x64/apps/quassel.png</file>
     <file alias="quassel-128.png">hicolor/128x128/apps/quassel.png</file>
-    <file>hicolor/16x16/status/message-quassel.png</file>
-    <file>hicolor/22x22/status/message-quassel.png</file>
-    <file>hicolor/32x32/status/message-quassel.png</file>
-    <file alias="message-quassel.png">hicolor/48x48/status/message-quassel.png</file>
-    <file>hicolor/64x64/status/message-quassel.png</file>
-    <file>hicolor/16x16/status/inactive-quassel.png</file>
-    <file>hicolor/22x22/status/inactive-quassel.png</file>
-    <file>hicolor/32x32/status/inactive-quassel.png</file>
-    <file alias="inactive-quassel.png">hicolor/48x48/status/inactive-quassel.png</file>
-    <file alias="inactive-quassel-64.png">hicolor/64x64/status/inactive-quassel.png</file>
-    <file alias="inactive-quassel-128.png">hicolor/128x128/status/inactive-quassel.png</file>
-    <file alias="irc-channel-joined.png">hicolor/16x16/status/irc-channel-joined.png</file>
-    <file alias="irc-channel-parted.png">hicolor/16x16/status/irc-channel-parted.png</file>
-    <file alias="im-user.png">hicolor/16x16/actions/im-user.png</file>
-    <file alias="im-user-away.png">hicolor/16x16/actions/im-user-away.png</file>
-    <file alias="im-user-offline.png">hicolor/16x16/actions/im-user-offline.png</file>
+    <file>hicolor/24x24/actions/dialog-close.svg</file>
+    <file>hicolor/24x24/actions/document-encrypt.svg</file>
+    <file>hicolor/24x24/actions/download.svg</file>
+    <file>hicolor/24x24/actions/edit-clear-locationbar-rtl.svg</file>
+    <file>hicolor/24x24/actions/edit-copy.svg</file>
+    <file>hicolor/24x24/actions/edit-find.svg</file>
+    <file>hicolor/24x24/actions/edit-rename.svg</file>
+    <file>hicolor/24x24/actions/flag-blue.svg</file>
+    <file>hicolor/24x24/actions/format-fill-color.svg</file>
+    <file>hicolor/24x24/actions/format-list-unordered.svg</file>
+    <file>hicolor/24x24/actions/format-text-bold.svg</file>
+    <file>hicolor/24x24/actions/format-text-color.svg</file>
+    <file>hicolor/24x24/actions/format-text-italic.svg</file>
+    <file>hicolor/24x24/actions/format-text-underline.svg</file>
+    <file>hicolor/24x24/actions/go-next-view.svg</file>
+    <file>hicolor/24x24/actions/go-previous-view.svg</file>
+    <file>hicolor/24x24/actions/im-ban-kick-user.svg</file>
+    <file>hicolor/24x24/actions/im-ban-user.svg</file>
+    <file>hicolor/24x24/actions/im-kick-user.svg</file>
+    <file>hicolor/24x24/actions/im-user-away.svg</file>
+    <file>hicolor/24x24/actions/im-user-offline.svg</file>
+    <file>hicolor/24x24/actions/im-user.svg</file>
+    <file>hicolor/24x24/actions/irc-close-channel.svg</file>
+    <file>hicolor/24x24/actions/irc-join-channel.svg</file>
+    <file>hicolor/24x24/actions/irc-operator.svg</file>
+    <file>hicolor/24x24/actions/irc-remove-operator.svg</file>
+    <file>hicolor/24x24/actions/irc-unvoice.svg</file>
+    <file>hicolor/24x24/actions/irc-voice.svg</file>
+    <file>hicolor/24x24/actions/list-add-user.svg</file>
+    <file>hicolor/24x24/actions/list-add.svg</file>
+    <file>hicolor/24x24/actions/list-remove-user.svg</file>
+    <file>hicolor/24x24/actions/network-connect.svg</file>
+    <file>hicolor/24x24/actions/network-disconnect.svg</file>
+    <file>hicolor/24x24/actions/show-menu.svg</file>
+    <file>hicolor/24x24/actions/tools-report-bug.svg</file>
+    <file>hicolor/24x24/actions/view-fullscreen.svg</file>
+    <file>hicolor/32x32/actions/application-exit.svg</file>
+    <file>hicolor/32x32/actions/configure-shortcuts.svg</file>
+    <file>hicolor/32x32/actions/configure.svg</file>
+    <file>hicolor/32x32/actions/dialog-cancel.svg</file>
+    <file>hicolor/32x32/actions/document-edit.svg</file>
+    <file>hicolor/32x32/actions/document-open.svg</file>
+    <file>hicolor/32x32/actions/edit-delete.svg</file>
+    <file>hicolor/32x32/actions/go-down.svg</file>
+    <file>hicolor/32x32/actions/go-next.svg</file>
+    <file>hicolor/32x32/actions/go-previous.svg</file>
+    <file>hicolor/32x32/actions/go-up.svg</file>
+    <file>hicolor/32x32/actions/help-about.svg</file>
+    <file>hicolor/32x32/actions/mail-message-new.svg</file>
+    <file>hicolor/32x32/actions/media-playback-start.svg</file>
+    <file>hicolor/32x32/actions/view-refresh.svg</file>
+    <file>hicolor/32x32/actions/zoom-in.svg</file>
+    <file>hicolor/32x32/actions/zoom-original.svg</file>
+    <file>hicolor/32x32/actions/zoom-out.svg</file>
+    <file>hicolor/22x22/devices/network-wired.svg</file>
+    <file>hicolor/32x32/preferences/help-about.svg</file>
+    <file>hicolor/22x22/status/irc-channel-joined.svg</file>
+    <file>hicolor/22x22/status/irc-channel-parted.svg</file>
+    <file>hicolor/22x22/status/network-wired.svg</file>
+    <file>hicolor/22x22/status/user-away.svg</file>
+    <file>hicolor/64x64/status/dialog-information.svg</file>
+    <file>hicolor/64x64/status/dialog-password.svg</file>
+    <file>hicolor/64x64/status/dialog-warning.svg</file>
+    <file>hicolor/64x64/status/security-high.svg</file>
+    <file>hicolor/64x64/status/security-low.svg</file>
   </qresource>
 </RCC>

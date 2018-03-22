@@ -46,7 +46,7 @@ QIcon ExtraIcon::load(const QString _name) {
     while(icons.length() == 0 && name != ""){
         name = ExtraIcon::getNextFallbackName(name);
         if (name == "") {
-            return QIcon(":/icons/" + _name + ".png");
+            return QIcon(":/icons/" + _name + ".svg");
         }
         icons = ExtraIcon::getIconList(iconSearchPaths, theme, name);
     }
