@@ -27,11 +27,13 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QTextDocument>
+#include <QDebug>
 
 #include "quassel.h"
 #include "statusnotifieritem.h"
 #include "statusnotifieritemdbus.h"
 #include "uisettings.h"
+#include "quasselqicon.h"
 
 const int StatusNotifierItem::_protocolVersion = 0;
 const QString StatusNotifierItem::_statusNotifierWatcherServiceName("org.kde.StatusNotifierWatcher");
@@ -114,7 +116,8 @@ void StatusNotifierItem::init()
     trayMenu()->installEventFilter(this);
 
     // use the appdata icon folder for now
-    _iconThemePath = Quassel::findDataFilePath("icons/extra");
+    QString extratheme = QuasselQIcon::extraThemeName();
+    _iconThemePath = Quassel::findDataFilePath("icons/extra/"+extratheme+"/statusnotifier/");
 
 #ifdef HAVE_DBUSMENU
     _menuObjectPath = "/MenuBar";
@@ -287,6 +290,7 @@ QString StatusNotifierItem::toolTipIconName() const
 
 QString StatusNotifierItem::iconThemePath() const
 {
+    qDebug()<<"StatusNotifierItem::iconThemePath():"<<_iconThemePath;
     return _iconThemePath;
 }
 

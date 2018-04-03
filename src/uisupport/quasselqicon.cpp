@@ -24,19 +24,10 @@
 
 QIcon QuasselQIcon::extra(const QString _name) {
     QString name = _name;
-    QString theme = QIcon::themeName();
-    if (theme == "breeze-dark") {
-        theme = "breezedark";
-    }
-    else if (theme != "breeze" && theme != "breezedark" && theme != "oxygen") {
-        if (QIcon::hasThemeIcon(name)) {
-            return QIcon::fromTheme(name);
-        }
-        if(QIcon::themeName().contains("dark")) {
-            theme = "breezedark";
-        } else {
-            theme = "breeze";
-        }
+    QString theme = QuasselQIcon::extraThemeName();
+    
+    if (theme != "breeze" && theme != "breezedark" && theme != "oxygen" && QIcon::hasThemeIcon(name)) {
+        return QIcon::fromTheme(name);
     }
 
     QStringList iconSearchPaths = QuasselQIcon::iconSearchPaths();
@@ -60,6 +51,21 @@ QIcon QuasselQIcon::extra(const QString _name) {
     }
 
     return qicon;
+}
+
+QString QuasselQIcon::extraThemeName() {
+    QString theme = QIcon::themeName();
+    if (theme == "breeze-dark") {
+        theme = "breezedark";
+    }
+    else if (theme != "breeze" && theme != "breezedark" && theme != "oxygen") {
+        if(QIcon::themeName().contains("dark")) {
+            theme = "breezedark";
+        } else {
+            theme = "breeze";
+        }
+    }
+    return theme;
 }
 
 QStringList QuasselQIcon::iconSearchPaths() {

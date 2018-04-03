@@ -23,5 +23,11 @@
     <file alias="breezedark/status/64/message-quassel-tray.svg">extra-icons/breezedark/status/64/message-quassel-tray.svg</file>
     <file alias="breezedark/status/24/message-quassel-tray-inverted.svg">extra-icons/breezedark/status/24/message-quassel-tray-inverted.svg</file>
     <file alias="breezedark/status/64/message-quassel-tray-inverted.svg">extra-icons/breezedark/status/64/message-quassel-tray-inverted.svg</file>
+    <file alias="breezedark/statusnotifier/active-quassel-tray.png">extra-icons/breezedark/statusnotifier/active-quassel-tray.png</file>
+    <file alias="breezedark/statusnotifier/active-quassel-tray-inverted.png">extra-icons/breezedark/statusnotifier/active-quassel-tray-inverted.png</file>
+    <file alias="breezedark/statusnotifier/inactive-quassel-tray.png">extra-icons/breezedark/statusnotifier/inactive-quassel-tray.png</file>
+    <file alias="breezedark/statusnotifier/inactive-quassel-tray-inverted.png">extra-icons/breezedark/statusnotifier/inactive-quassel-tray-inverted.png</file>
+    <file alias="breezedark/statusnotifier/message-quassel-tray.png">extra-icons/breezedark/statusnotifier/message-quassel-tray.png</file>
+    <file alias="breezedark/statusnotifier/message-quassel-tray-inverted.png">extra-icons/breezedark/statusnotifier/message-quassel-tray-inverted.png</file>
   </qresource>
 </RCC>

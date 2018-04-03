@@ -48,5 +48,11 @@
     <file alias="oxygen/48x48/actions/disconnect-quassel.png">extra-icons/oxygen/48x48/actions/disconnect-quassel.png</file>
     <file alias="oxygen/64x64/actions/disconnect-quassel.png">extra-icons/oxygen/64x64/actions/disconnect-quassel.png</file>
     <file alias="oxygen/128x128/actions/disconnect-quassel.png">extra-icons/oxygen/128x128/actions/disconnect-quassel.png</file>
+    <file alias="oxygen/statusnotifier/active-quassel-tray.png">extra-icons/oxygen/statusnotifier/active-quassel-tray.png</file>
+    <file alias="oxygen/statusnotifier/active-quassel-tray-inverted.png">extra-icons/oxygen/statusnotifier/active-quassel-tray-inverted.png</file>
+    <file alias="oxygen/statusnotifier/inactive-quassel-tray.png">extra-icons/oxygen/statusnotifier/inactive-quassel-tray.png</file>
+    <file alias="oxygen/statusnotifier/inactive-quassel-tray-inverted.png">extra-icons/oxygen/statusnotifier/inactive-quassel-tray-inverted.png</file>
+    <file alias="oxygen/statusnotifier/message-quassel-tray.png">extra-icons/oxygen/statusnotifier/message-quassel-tray.png</file>
+    <file alias="oxygen/statusnotifier/message-quassel-tray-inverted.png">extra-icons/oxygen/statusnotifier/message-quassel-tray-inverted.png</file>
   </qresource>
 </RCC>

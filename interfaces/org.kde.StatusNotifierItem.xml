@@ -10,6 +10,8 @@
 
 
     <!-- main icon -->
+    <property name="IconThemePath" type="s" access="read"/>
+
     <!-- names are preferred over pixmaps -->
     <property name="IconName" type="s" access="read"/>
 

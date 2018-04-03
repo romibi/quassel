@@ -24,6 +24,7 @@
 class QuasselQIcon {
 public:
     static QIcon extra(const QString);
+    static QString extraThemeName();
     static QIcon fromTheme(const QString);
     static QIcon fromTheme(const QString, const QIcon);
 
