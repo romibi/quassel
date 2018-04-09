@@ -5,7 +5,10 @@ sudo: required
 dist: trusty
 
 language: cpp
-cache: ccache
+cache:
+  ccache: true
+  directories:
+    - $HOME/Library/Caches/Homebrew
 
 compiler:
   - gcc
@@ -24,6 +27,13 @@ matrix:
     - compiler: clang
       env: QT_VERSION=qt4
 
+before_install: |-
+  if [[ "$TRAVIS_OS_NAME" == "osx" ]]
+  then
+    brew update
+    brew install ccache
+  fi
+
 install: |-
   if [ "$TRAVIS_OS_NAME" == "linux" ]
   then
@@ -35,8 +45,8 @@ install: |-
     sudo apt-get -qy install libphonon4qt5experimental4 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=805096
   elif [ "$TRAVIS_OS_NAME" == "osx" ]
   then
-    brew update
-    brew install ninja qt5
+    brew install ninja
+    travis_wait 50 brew install qt5 --with-postgresql
   fi
 
 script: |-
