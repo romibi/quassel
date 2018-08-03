@@ -21,7 +21,6 @@
 #ifndef FONTSELECTOR_H_
 #define FONTSELECTOR_H_
 
-#include <QFontDialog>
 #include <QLabel>
 #include <QWidget>
 
@@ -50,7 +49,6 @@ protected slots:
 private:
     QFont _font;
     QLabel *_demo;
-    QFontDialog *_fontdialog;
 };
 
 

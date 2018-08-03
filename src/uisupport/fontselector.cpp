@@ -40,9 +40,6 @@ FontSelector::FontSelector(QWidget *parent) : QWidget(parent)
     _demo->setFrameShadow(QFrame::Sunken);
     _demo->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
     _font = font();
-    
-    _fontdialog = new QFontDialog();
-    _fontdialog->setOption(QFontDialog::DontUseNativeDialog);
 }
 
 
@@ -58,7 +55,8 @@ void FontSelector::setSelectedFont(const QFont &font)
 void FontSelector::chooseFont()
 {
     bool ok;
-    QFont font = _fontdialog->getFont(&ok, _demo->font());
+    //QFont font = QFontDialog::getFont(&ok, _demo->font());
+    QFont font = QFontDialog::getFont(&ok, _demo->font(), nullptr, QString(), QFontDialog::DontUseNativeDialog);
     if (ok) {
         setSelectedFont(font);
     }
