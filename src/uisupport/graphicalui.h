@@ -23,6 +23,7 @@
 
 #include "abstractui.h"
 #include "singleton.h"
+#include "types.h"
 
 class ActionCollection;
 class ContextMenuActionProvider;
@@ -48,7 +49,10 @@ public:
     *  @param category The category (default: "General")
     */
     static ActionCollection *actionCollection(const QString &category = "General", const QString &translatedCategory = QString());
+    static ActionCollection *quickAccessorActionCollection(const QString&);
     static QHash<QString, ActionCollection *> actionCollections();
+    static QHash<QString, ActionCollection *> quickAccessorActionCollections();
+    static QHash<QString, ActionCollection *> allActionCollections();
 
     //! Load custom shortcuts from ShortcutSettings
     /** @note This method assumes that all configurable actions are defined when being called
@@ -112,6 +116,7 @@ protected slots:
 private:
     static QWidget *_mainWidget;
     static QHash<QString, ActionCollection *> _actionCollections;
+    static QHash<QString, ActionCollection *> _quickAccessorActionCollections;
     static ContextMenuActionProvider *_contextMenuActionProvider;
     static ToolBarActionProvider *_toolBarActionProvider;
     static UiStyle *_uiStyle;

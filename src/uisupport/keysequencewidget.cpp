@@ -29,6 +29,7 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QHBoxLayout>
+#include <QIcon>
 #include <QMessageBox>
 #include <QToolButton>
 
@@ -39,7 +40,6 @@
 
 #include "action.h"
 #include "actioncollection.h"
-#include "icon.h"
 #include "keysequencewidget.h"
 
 KeySequenceButton::KeySequenceButton(KeySequenceWidget *d_, QWidget *parent)
@@ -172,7 +172,7 @@ KeySequenceWidget::KeySequenceWidget(QWidget *parent)
 
     _keyButton = new KeySequenceButton(this, this);
     _keyButton->setFocusPolicy(Qt::StrongFocus);
-    _keyButton->setIcon(icon::get("configure"));
+    _keyButton->setIcon(QIcon::fromTheme("configure"));
     _keyButton->setToolTip(tr("Click on the button, then enter the shortcut like you would in the program.\nExample for Ctrl+a: hold the Ctrl key and press a."));
     layout->addWidget(_keyButton);
 
@@ -180,9 +180,9 @@ KeySequenceWidget::KeySequenceWidget(QWidget *parent)
     layout->addWidget(_clearButton);
 
     if (qApp->isLeftToRight())
-        _clearButton->setIcon(icon::get("edit-clear-locationbar-rtl"));
+        _clearButton->setIcon(QIcon::fromTheme("edit-clear-locationbar-rtl", QIcon::fromTheme("edit-clear")));
     else
-        _clearButton->setIcon(icon::get("edit-clear-locationbar-ltr"));
+        _clearButton->setIcon(QIcon::fromTheme("edit-clear-locationbar-ltr", QIcon::fromTheme("edit-clear")));
 
     setLayout(layout);
 
@@ -195,7 +195,7 @@ KeySequenceWidget::KeySequenceWidget(QWidget *parent)
 
 void KeySequenceWidget::setModel(ShortcutsModel *model)
 {
-    Q_ASSERT(!_shortcutsModel);
+    //Q_ASSERT(!_shortcutsModel);
     _shortcutsModel = model;
 }
 
@@ -368,6 +368,9 @@ void KeySequenceWidget::clear()
 bool KeySequenceWidget::isKeySequenceAvailable(const QKeySequence &seq)
 {
     if (seq.isEmpty())
+        return true;
+
+    if(!_shortcutsModel)
         return true;
 
     // We need to access the root model, not the filtered one
