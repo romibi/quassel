@@ -452,7 +452,7 @@ void MainWin::setupActions()
     coll->addAction("ConfigureShortcuts", configureShortcutsAct);
 
 #ifdef HAVE_KDE
-    QAction *configureQuickAccessorsAct = new Action(SmallIcon("configure-shortcuts"), tr("Configure &Quick Accessors..."), coll,
+    QAction *configureQuickAccessorsAct = new Action(icon::get("configure-shortcuts"), tr("Configure &Quick Accessors..."), coll,
         this, SLOT(showQuickAccessorsDlg()));
     configureQuickAccessorsAct->setMenuRole(QAction::NoRole);
     coll->addAction("ConfigureQuickAccessors", configureQuickAccessorsAct);
