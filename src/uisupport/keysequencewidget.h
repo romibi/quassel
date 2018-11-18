@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005-2018 by the Quassel Project                        *
+ *   Copyright (C) 2005-2016 by the Quassel Project                        *
  *   devel@quassel-irc.org                                                 *
  *                                                                         *
  *   This class has been inspired by KDE's KKeySequenceWidget and uses     *
@@ -50,6 +50,7 @@ public:
 
 public slots:
     void setKeySequence(const QKeySequence &seq);
+    void startRecording();
 
 signals:
     /**
@@ -64,7 +65,6 @@ signals:
 
 private slots:
     void updateShortcutDisplay();
-    void startRecording();
     void cancelRecording();
     void clear();
 

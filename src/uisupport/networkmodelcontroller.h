@@ -56,6 +56,7 @@ public:
         BufferPart = 0x20,
         BufferSwitchTo = 0x30,
         BufferRemove = 0x40,
+        BufferSetShortcut = 0x50,
 
         // Hide actions
         HideMask = 0x0f00,
@@ -166,6 +167,7 @@ signals:
     void showChannelList(NetworkId, const QString &, bool);
     void showNetworkConfig(NetworkId);
     void showIgnoreList(QString);
+    void bufferShortcutsChanged(BufferId);
 
 protected:
     virtual void handleNetworkAction(ActionType, QAction *);
