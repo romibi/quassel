@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005-2018 by the Quassel Project                        *
+ *   Copyright (C) 2005-2019 by the Quassel Project                        *
  *   devel@quassel-irc.org                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -43,7 +43,7 @@ DebugLogDlg::DebugLogDlg(QWidget *parent)
 
 QString DebugLogDlg::toString(const Logger::LogEntry &msg)
 {
-    return msg.timeStamp.toString("yyyy-MM-dd hh:mm:ss ") + msg.message + "\n";
+    return msg.toString() + "\n";
 }
 
 

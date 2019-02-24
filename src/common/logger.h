@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005-2018 by the Quassel Project                        *
+ *   Copyright (C) 2005-2019 by the Quassel Project                        *
  *   devel@quassel-irc.org                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -51,6 +51,13 @@ public:
         QDateTime timeStamp;
         LogLevel logLevel;
         QString message;
+
+        /**
+         * Gets this log entry in a printable format, with timestamp and log level
+         *
+         * @return the log entry, formatted with timestamp and log level
+         */
+        QString toString() const;
     };
 
     /**
@@ -111,6 +118,7 @@ private:
     std::vector<LogEntry> _messages;
     bool _keepMessages{true};
     bool _initialized{false};
+    QByteArray _prgname;
 };
 
 Q_DECLARE_METATYPE(Logger::LogEntry)

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005-2018 by the Quassel Project                        *
+ *   Copyright (C) 2005-2019 by the Quassel Project                        *
  *   devel@quassel-irc.org                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -55,7 +55,7 @@ NetworkItem::NetworkItem(const NetworkId &netid, AbstractTreeItem *parent)
 
 QStringList NetworkItem::propertyOrder() const
 {
-    static QStringList order{"networkName", "currentServer", "nickCount"};
+    static auto order = QStringList() << "networkName" << "currentServer" << "nickCount";
     return order;
 }
 
@@ -300,7 +300,7 @@ BufferItem::BufferItem(const BufferInfo &bufferInfo, AbstractTreeItem *parent)
 
 QStringList BufferItem::propertyOrder() const
 {
-    static QStringList order{"bufferName", "topic", "nickCount"};
+    static auto order = QStringList() << "bufferName" << "topic" << "nickCount";
     return order;
 }
 
@@ -436,7 +436,6 @@ bool BufferItem::setData(int column, const QVariant &value, int role)
     default:
         return PropertyMapItem::setData(column, value, role);
     }
-    return true;
 }
 
 

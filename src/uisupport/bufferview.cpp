@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005-2018 by the Quassel Project                        *
+ *   Copyright (C) 2005-2019 by the Quassel Project                        *
  *   devel@quassel-irc.org                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -594,6 +594,7 @@ void BufferView::hideCurrentBuffer()
     config()->requestRemoveBuffer(bufferId);
 }
 
+
 void BufferView::filterTextChanged(const QString& filterString)
 {
     BufferViewFilter *filter = qobject_cast<BufferViewFilter *>(model());
@@ -602,25 +603,6 @@ void BufferView::filterTextChanged(const QString& filterString)
     }
     filter->setFilterString(filterString);
     on_configChanged(); // make sure collapsation is correct
-}
-
-
-QSize BufferView::sizeHint() const
-{
-    return TreeViewTouch::sizeHint();
-
-    if (!model())
-        return TreeViewTouch::sizeHint();
-
-    if (model()->rowCount() == 0)
-        return QSize(120, 50);
-
-    int columnSize = 0;
-    for (int i = 0; i < model()->columnCount(); i++) {
-        if (!isColumnHidden(i))
-            columnSize += sizeHintForColumn(i);
-    }
-    return QSize(columnSize, 50);
 }
 
 

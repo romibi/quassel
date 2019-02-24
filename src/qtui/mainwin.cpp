@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005-2018 by the Quassel Project                        *
+ *   Copyright (C) 2005-2019 by the Quassel Project                        *
  *   devel@quassel-irc.org                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -474,7 +474,7 @@ void MainWin::setupActions()
     aboutQuasselAct->setMenuRole(QAction::AboutRole);
     coll->addAction("AboutQuassel", aboutQuasselAct);
 
-    QAction *aboutQtAct = new Action(QIcon(":/pics/qt-logo.png"), tr("About &Qt"), coll,
+    QAction *aboutQtAct = new Action(QIcon(":/pics/qt-logo-32.png"), tr("About &Qt"), coll,
         qApp, SLOT(aboutQt()));
     aboutQtAct->setMenuRole(QAction::AboutQtRole);
     coll->addAction("AboutQt", aboutQtAct);
@@ -1293,13 +1293,13 @@ void MainWin::loadLayout()
     QtUiSettings s;
     int accountId = Client::currentCoreAccount().accountId().toInt();
     QByteArray state = s.value(QString("MainWinState-%1").arg(accountId)).toByteArray();
+    _nickListWidget->setVisible(true);
     if (state.isEmpty()) {
         foreach(BufferViewDock *view, _bufferViews)
         view->show();
         _layoutLoaded = true;
         return;
     }
-    _nickListWidget->setVisible(true);
     restoreState(state, accountId);
     int bufferViewId = s.value(QString("ActiveBufferView-%1").arg(accountId), -1).toInt();
     if (bufferViewId >= 0)

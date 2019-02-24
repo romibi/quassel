@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005-2018 by the Quassel Project                        *
+ *   Copyright (C) 2005-2019 by the Quassel Project                        *
  *   devel@quassel-irc.org                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -36,7 +36,7 @@ namespace {
 
 QByteArray msgWithTime(const Logger::LogEntry &msg)
 {
-    return (msg.timeStamp.toString("yyyy-MM-dd hh:mm:ss ") + msg.message + "\n").toUtf8();
+    return (msg.toString() + "\n").toUtf8();
 };
 
 }
@@ -114,6 +114,23 @@ bool Logger::setup(bool keepMessages)
 
 #ifdef HAVE_SYSLOG
     _syslogEnabled = Quassel::isOptionSet("syslog");
+
+    Quassel::RunMode mode = Quassel::runMode();
+    Quassel::BuildInfo info = Quassel::buildInfo();
+    QString prgname = info.applicationName;
+
+    if (mode == Quassel::RunMode::ClientOnly) {
+        prgname = info.clientApplicationName;
+    } else if (mode == Quassel::RunMode::CoreOnly) {
+        prgname = info.coreApplicationName;
+    }
+
+    _prgname = prgname.toLocal8Bit();
+
+    // set up options, program name, and facility for later calls to syslog(3)
+    if (_syslogEnabled) {
+        openlog(_prgname.constData(), LOG_PID, LOG_USER);
+    }
 #endif
 
     _initialized = true;
@@ -166,28 +183,8 @@ void Logger::handleMessage(QtMsgType type, const QString &msg)
 
 void Logger::handleMessage(LogLevel level, const QString &msg)
 {
-    QString logString;
-
-    switch (level) {
-    case LogLevel::Debug:
-        logString = "[Debug] ";
-        break;
-    case LogLevel::Info:
-        logString = "[Info ] ";
-        break;
-    case LogLevel::Warning:
-        logString = "[Warn ] ";
-        break;
-    case LogLevel::Error:
-        logString = "[Error] ";
-        break;
-    case LogLevel::Fatal:
-        logString = "[FATAL] ";
-        break;
-    }
-
     // Use signal connection to make this method thread-safe
-    emit messageLogged({QDateTime::currentDateTime(), level, logString += msg});
+    emit messageLogged({QDateTime::currentDateTime(), level, msg});
 }
 
 
@@ -229,7 +226,7 @@ void Logger::outputMessage(const LogEntry &message)
         case LogLevel::Fatal:
             prio = LOG_CRIT;
         }
-        syslog(prio|LOG_USER, "%s", qPrintable(message.message));
+        syslog(prio, "%s", qPrintable(message.message));
     }
 #endif
 
@@ -248,4 +245,30 @@ void Logger::outputMessage(const LogEntry &message)
     }
 #endif
 
+}
+
+
+QString Logger::LogEntry::toString() const
+{
+    QString levelString;
+
+    switch (logLevel) {
+        case Logger::LogLevel::Debug:
+            levelString = "[Debug] ";
+            break;
+        case Logger::LogLevel::Info:
+            levelString = "[Info ] ";
+            break;
+        case Logger::LogLevel::Warning:
+            levelString = "[Warn ] ";
+            break;
+        case Logger::LogLevel::Error:
+            levelString = "[Error] ";
+            break;
+        case Logger::LogLevel::Fatal:
+            levelString = "[FATAL] ";
+            break;
+    }
+
+    return timeStamp.toString("yyyy-MM-dd hh:mm:ss ") + levelString + message;
 }

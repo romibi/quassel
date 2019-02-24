@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005-2018 by the Quassel Project                        *
+ *   Copyright (C) 2005-2019 by the Quassel Project                        *
  *   devel@quassel-irc.org                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -190,13 +190,13 @@ QString AbstractSqlStorage::queryString(const QString &queryName, int version)
 }
 
 
-QStringList AbstractSqlStorage::setupQueries()
+QList<AbstractSqlStorage::SqlQueryResource> AbstractSqlStorage::setupQueries()
 {
-    QStringList queries;
+    QList<SqlQueryResource> queries;
     // The current schema is stored in the root folder, including setup scripts.
     QDir dir = QDir(QString(":/SQL/%1/").arg(displayName()));
     foreach(QFileInfo fileInfo, dir.entryInfoList(QStringList() << "setup*", QDir::NoFilter, QDir::Name)) {
-        queries << queryString(fileInfo.baseName());
+        queries << SqlQueryResource(queryString(fileInfo.baseName()), fileInfo.baseName());
     }
     return queries;
 }
@@ -213,10 +213,11 @@ bool AbstractSqlStorage::setup(const QVariantMap &settings, const QProcessEnviro
     }
 
     db.transaction();
-    foreach(QString queryString, setupQueries()) {
-        QSqlQuery query = db.exec(queryString);
+    foreach (auto queryResource, setupQueries()) {
+        QSqlQuery query = db.exec(queryResource.queryString);
         if (!watchQuery(query)) {
-            qCritical() << "Unable to setup Logging Backend!";
+            qCritical() << qPrintable(QString("Unable to setup Logging Backend!  Setup query failed (step: %1).")
+                                      .arg(queryResource.queryFilename));
             db.rollback();
             return false;
         }
@@ -230,13 +231,13 @@ bool AbstractSqlStorage::setup(const QVariantMap &settings, const QProcessEnviro
 }
 
 
-QStringList AbstractSqlStorage::upgradeQueries(int version)
+QList<AbstractSqlStorage::SqlQueryResource> AbstractSqlStorage::upgradeQueries(int version)
 {
-    QStringList queries;
+    QList<SqlQueryResource> queries;
     // Upgrade queries are stored in the 'version/##' subfolders.
     QDir dir = QDir(QString(":/SQL/%1/version/%2/").arg(displayName()).arg(version));
     foreach(QFileInfo fileInfo, dir.entryInfoList(QStringList() << "upgrade*", QDir::NoFilter, QDir::Name)) {
-        queries << queryString(fileInfo.baseName(), version);
+        queries << SqlQueryResource(queryString(fileInfo.baseName(), version), fileInfo.baseName());
     }
     return queries;
 }
@@ -253,39 +254,74 @@ bool AbstractSqlStorage::upgradeDb()
     // transaction.  This will need careful testing of potential additional space requirements and
     // any database modifications that might not be allowed in a transaction.
 
+    // Check if we're resuming an interrupted multi-step upgrade: is an upgrade step stored?
+    const QString previousLaunchUpgradeStep = schemaVersionUpgradeStep();
+    bool resumingUpgrade = !previousLaunchUpgradeStep.isEmpty();
+
     for (int ver = installedSchemaVersion() + 1; ver <= schemaVersion(); ver++) {
-        foreach(QString queryString, upgradeQueries(ver)) {
-            QSqlQuery query = db.exec(queryString);
+        foreach (auto queryResource, upgradeQueries(ver)) {
+            if (resumingUpgrade) {
+                // An upgrade was interrupted.  Check if this matches the the last successful query.
+                if (previousLaunchUpgradeStep == queryResource.queryFilename) {
+                    // Found the matching query!
+                    quInfo() << qPrintable(QString("Resuming interrupted upgrade for schema version %1 (last step: %2)")
+                                           .arg(QString::number(ver), previousLaunchUpgradeStep));
+
+                    // Stop searching for queries
+                    resumingUpgrade = false;
+                    // Continue past the previous query with the next not-yet-tried query
+                    continue;
+                }
+                else {
+                    // Not yet matched, keep looking
+                    continue;
+                }
+            }
+
+            // Run the upgrade query
+            QSqlQuery query = db.exec(queryResource.queryString);
             if (!watchQuery(query)) {
                 // Individual upgrade query failed, bail out
-                qCritical() << "Unable to upgrade Logging Backend!  Upgrade query in schema version"
-                            << ver << "failed.";
+                qCritical() << qPrintable(QString("Unable to upgrade Logging Backend!  Upgrade query in schema version %1 failed (step: %2).")
+                                          .arg(QString::number(ver), queryResource.queryFilename));
                 return false;
+            }
+            else {
+                // Mark as successful
+                setSchemaVersionUpgradeStep(queryResource.queryFilename);
             }
         }
 
-        // Update the schema version for each intermediate step.  This ensures that any interrupted
-        // upgrades have a greater chance of resuming correctly after core restart.
+        if (resumingUpgrade) {
+            // Something went wrong and the last successful SQL query to resume from couldn't be
+            // found.
+            // 1.  The storage of successful query glitched, or the database was manually changed
+            // 2.  Quassel changed the filenames of upgrade queries, and the local Quassel core
+            //     version was replaced during an interrupted schema upgrade
+            //
+            // Both are unlikely, but it's a good idea to handle it anyways.
+
+            qCritical() << qPrintable(QString("Unable to resume interrupted upgrade in Logging "
+                                              "Backend!  Missing upgrade step in schema version %1 "
+                                              "(expected step: %2)")
+                                      .arg(QString::number(ver), previousLaunchUpgradeStep));
+            return false;
+        }
+
+        // Update the schema version for each intermediate step and mark the step as done.  This
+        // ensures that any interrupted upgrades have a greater chance of resuming correctly after
+        // core restart.
         //
         // Almost all databases make single queries atomic (fully works or fully fails, no partial),
         // and with many of the longest migrations being a single query, this makes upgrade
         // interruptions much more likely to leave the database in a valid intermediate schema
         // version.
-        if (!updateSchemaVersion(ver)) {
+        if (!updateSchemaVersion(ver, true)) {
             // Updating the schema version failed, bail out
             qCritical() << "Unable to upgrade Logging Backend!  Setting schema version"
                         << ver << "failed.";
             return false;
         }
-    }
-
-    // Update the schema version for the final step.  Split this out to offer more informative
-    // logging (though setting schema version really should not fail).
-    if (!updateSchemaVersion(schemaVersion())) {
-        // Updating the final schema version failed, bail out
-        qCritical() << "Unable to upgrade Logging Backend!  Setting final schema version"
-                    << schemaVersion() << "failed.";
-        return false;
     }
 
     // If we made it here, everything seems to have worked!
@@ -316,6 +352,13 @@ int AbstractSqlStorage::schemaVersion()
             _schemaVersion = version;
     }
     return _schemaVersion;
+}
+
+
+QString AbstractSqlStorage::schemaVersionUpgradeStep()
+{
+    // By default, assume there's no pending upgrade
+    return {};
 }
 
 

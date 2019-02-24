@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2005-2018 by the Quassel Project                        *
+ *   Copyright (C) 2005-2019 by the Quassel Project                        *
  *   devel@quassel-irc.org                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -187,19 +187,39 @@ int PostgreSqlStorage::installedSchemaVersion()
 }
 
 
-bool PostgreSqlStorage::updateSchemaVersion(int newVersion)
+bool PostgreSqlStorage::updateSchemaVersion(int newVersion, bool clearUpgradeStep)
 {
-    QSqlQuery query(logDb());
+    // Atomically update the schema version and clear the upgrade step, if specified
+    // Note: This will need reworked if "updateSchemaVersion" is ever called within a transaction.
+    QSqlDatabase db = logDb();
+    if (!beginTransaction(db)) {
+        qWarning() << "PostgreSqlStorage::updateSchemaVersion(int, bool): cannot start transaction!";
+        qWarning() << " -" << qPrintable(db.lastError().text());
+        return false;
+    }
+
+    QSqlQuery query(db);
     query.prepare("UPDATE coreinfo SET value = :version WHERE key = 'schemaversion'");
     query.bindValue(":version", newVersion);
     safeExec(query);
 
-    bool success = true;
     if (!watchQuery(query)) {
-        qCritical() << "PostgreSqlStorage::updateSchemaVersion(int): Updating schema version failed!";
-        success = false;
+        qCritical() << "PostgreSqlStorage::updateSchemaVersion(int, bool): Updating schema version failed!";
+        db.rollback();
+        return false;
     }
-    return success;
+
+    if (clearUpgradeStep) {
+        // Try clearing the upgrade step if requested
+        if (!setSchemaVersionUpgradeStep("")) {
+            db.rollback();
+            return false;
+        }
+    }
+
+    // Successful, commit and return true
+    db.commit();
+    return true;
 }
 
 
@@ -214,6 +234,52 @@ bool PostgreSqlStorage::setupSchemaVersion(int version)
     if (!watchQuery(query)) {
         qCritical() << "PostgreSqlStorage::setupSchemaVersion(int): Updating schema version failed!";
         success = false;
+    }
+    return success;
+}
+
+
+QString PostgreSqlStorage::schemaVersionUpgradeStep()
+{
+    QSqlQuery query(logDb());
+    query.prepare("SELECT value FROM coreinfo WHERE key = 'schemaupgradestep'");
+    safeExec(query);
+    watchQuery(query);
+    if (query.first())
+        return query.value(0).toString();
+
+    // Fall back to the default value
+    return AbstractSqlStorage::schemaVersionUpgradeStep();
+}
+
+
+bool PostgreSqlStorage::setSchemaVersionUpgradeStep(QString upgradeQuery)
+{
+    // Intentionally do not wrap in a transaction so other functions can include multiple operations
+
+    QSqlQuery query(logDb());
+    query.prepare("UPDATE coreinfo SET value = :upgradestep WHERE key = 'schemaupgradestep'");
+    query.bindValue(":upgradestep", upgradeQuery);
+    safeExec(query);
+
+    // Make sure that the query didn't fail (shouldn't ever happen), and that some non-zero number
+    // of rows were affected
+    bool success = watchQuery(query) && query.numRowsAffected() != 0;
+
+    if (!success) {
+        // The key might not exist (Quassel 0.13.0 and older).  Try inserting it...
+        query = QSqlQuery(logDb());
+        query.prepare("INSERT INTO coreinfo (key, value) VALUES ('schemaupgradestep', :upgradestep)");
+        query.bindValue(":upgradestep", upgradeQuery);
+        safeExec(query);
+
+        if (!watchQuery(query)) {
+            qCritical() << Q_FUNC_INFO << "Setting schema upgrade step failed!";
+            success = false;
+        }
+        else {
+            success = true;
+        }
     }
     return success;
 }
@@ -1843,13 +1909,18 @@ QList<Message> PostgreSqlStorage::requestMsgsFiltered(UserId user, BufferId buff
     QSqlQuery query(db);
     if (last == -1 && first == -1) {
         query.prepare(queryString("select_messagesNewestK_filtered"));
+        // Workaround for Qt 4 QSqlQuery::bindValue() not supporting repeated placeholder names
+        query.bindValue(":bufferDup1", bufferId.toInt());
     } else if (last == -1) {
         query.prepare(queryString("select_messagesNewerThan_filtered"));
         query.bindValue(":first", first.toQint64());
+        // Workaround for Qt 4 QSqlQuery::bindValue() not supporting repeated placeholder names
+        query.bindValue(":bufferDup1", bufferId.toInt());
     } else {
         query.prepare(queryString("select_messagesRange_filtered"));
         query.bindValue(":last", last.toQint64());
         query.bindValue(":first", first.toQint64());
+        // Workaround for Qt 4 QSqlQuery::bindValue() not needed, only has one ":buffer"
     }
     query.bindValue(":buffer", bufferId.toInt());
     query.bindValue(":limit", limit);
@@ -1857,6 +1928,8 @@ QList<Message> PostgreSqlStorage::requestMsgsFiltered(UserId user, BufferId buff
     query.bindValue(":type", typeRaw);
     int flagsRaw = flags;
     query.bindValue(":flags", flagsRaw);
+    // Workaround for Qt 4 QSqlQuery::bindValue() not supporting repeated placeholder names
+    query.bindValue(":flagsDup1", flagsRaw);
 
     safeExec(query);
     if (!watchQuery(query)) {
@@ -1979,6 +2052,8 @@ QList<Message> PostgreSqlStorage::requestAllMsgsFiltered(UserId user, MsgId firs
 
     int flagsRaw = flags;
     query.bindValue(":flags", flagsRaw);
+    // Workaround for Qt 4 QSqlQuery::bindValue() not supporting repeated placeholder names
+    query.bindValue(":flagsDup1", flagsRaw);
 
     safeExec(query);
     if (!watchQuery(query)) {
